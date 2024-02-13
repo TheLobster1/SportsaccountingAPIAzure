@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+	<modules_information type="dict">
+		<bar_information type="dict">
+			<expense type="float">-2625.6600000000003</expense>
+			<income type="float">5274.859999999999</income>
+			<turnover type="float">2649.1999999999985</turnover>
+		</bar_information>
+		<rental_information type="dict">
+			<expense type="float">-200.6</expense>
+			<income type="float">0.0</income>
+			<turnover type="float">-200.6</turnover>
+		</rental_information>
+	</modules_information>
+</root>

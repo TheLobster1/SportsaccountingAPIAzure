@@ -1,0 +1,258 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "File Validation",
+  "description": "A JSON schema for validating the contents of a MT940 file",
+  "type": "object",
+  "properties": {
+    "account_identification": {
+      "description": "The account identification of the account for which the statement is issued",
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 37
+    },
+    "available_balance": {
+      "description": "The available balance of the account at the end of the statement period",
+      "type": "object",
+      "maxLength": 11,
+      "properties": {
+        "amount": {
+          "type": "object",
+          "properties": {
+            "amount": {
+              "type": "string",
+              "pattern": "^-?[0-9]+(\\.[0-9]{1,2})?$"
+            },
+            "currency": {
+              "type": "string",
+              "minLength": 3,
+              "maxLength": 3
+            }
+          },
+          "required": [
+            "amount",
+            "currency"
+          ]
+        },
+        "date": {
+          "type": "string",
+          "format": "date"
+        },
+        "status": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1
+        }
+      },
+      "required": [
+        "amount",
+        "date",
+        "status"
+      ]
+    },
+    "final_closing_balance": {
+      "description": "The final closing balance of the account at the end of the statement period",
+      "type": "object",
+      "maxLength": 11,
+      "properties": {
+        "amount": {
+          "type": "object",
+          "properties": {
+            "amount": {
+              "type": "string",
+              "pattern": "^-?[0-9]+(\\.[0-9]{1,2})?$"
+            },
+            "currency": {
+              "type": "string",
+              "minLength": 3,
+              "maxLength": 3
+            }
+          },
+          "required": [
+            "amount",
+            "currency"
+          ]
+        },
+        "date": {
+          "type": "string",
+          "format": "date"
+        },
+        "status": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1
+        }
+      },
+      "required": [
+        "amount",
+        "date",
+        "status"
+      ]
+    },
+    "final_opening_balance": {
+      "description": "The final opening balance of the account at the end of the statement period",
+      "type": "object",
+      "maxLength": 11,
+      "properties": {
+        "amount": {
+          "type": "object",
+          "properties": {
+            "amount": {
+              "description": "The amount of the transaction, only positive numbers are allowed",
+              "type": "string",
+              "pattern": "^-?[0-9]+(\\.[0-9]{1,2})?$"
+            },
+            "currency": {
+              "type": "string",
+              "minLength": 3,
+              "maxLength": 3
+            }
+          },
+          "required": [
+            "amount",
+            "currency"
+          ]
+        },
+        "date": {
+          "type": "string",
+          "format": "date"
+        },
+        "status": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1
+        }
+      },
+      "required": [
+        "amount",
+        "date",
+        "status"
+      ]
+    },
+    "sequence_number": {
+      "description": "The sequence number of the statement, can be null",
+      "type": ["string", "null"],
+      "maxLength": 255
+    },
+    "statement_number": {
+      "description": "The number of the statement, only positive numbers are allowed",
+      "type": "string",
+      "pattern": "^0|[1-9][0-9]*$",
+      "minLength": 1,
+      "maxLength": 255
+    },
+    "transaction_reference": {
+      "description": "The transaction reference of the statement",
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 255
+    },
+    "transactions": {
+      "description": "The transactions of the statement",
+      "type": "array",
+      "items": [
+        {
+          "type": "object",
+          "properties": {
+            "amount": {
+              "type": "object",
+              "properties": {
+                "amount": {
+                  "description": "The amount of the transaction, number can be negative",
+                  "type": "string",
+                  "pattern": "^-?[0-9]+(\\.[0-9]{1,2})?$"
+                },
+                "currency": {
+                  "type": "string",
+                  "minLength": 3,
+                  "maxLength": 3
+                }
+              },
+              "required": [
+                "amount",
+                "currency"
+              ]
+            },
+            "bank_reference": {
+              "description": "The bank reference of the transaction, only positive integers are allowed",
+              "type": "string",
+              "pattern": "^0|[1-9][0-9]*$",
+              "minLength": 0,
+              "maxLength": 20
+            },
+            "currency": {
+              "type": "string",
+              "minLength": 3,
+              "maxLength": 3
+            },
+            "customer_reference": {
+              "description": "The customer reference of the transaction, only positive integers are allowed",
+              "type": "string",
+              "minLength": 4,
+              "maxLength": 4
+            },
+            "date": {
+              "type": "string",
+              "format": "date"
+            },
+            "entry_date": {
+              "type": "string",
+              "format": "date"
+            },
+            "extra_details": {
+              "type": "string",
+              "minLength": 0,
+              "maxLength": 255
+            },
+            "funds_code": {
+              "description": "The funds code of the transaction. It can be null",
+              "type": ["string", "null"]
+            },
+            "guessed_entry_date": {
+              "type": "string",
+              "format": "date"
+            },
+            "id": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4
+            },
+            "status": {
+              "type": "string",
+              "minLength": 0,
+              "maxLength": 1
+            },
+            "transaction_details": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 255
+            }
+          },
+          "required": [
+            "amount",
+            "bank_reference",
+            "currency",
+            "customer_reference",
+            "date",
+            "entry_date",
+            "extra_details",
+            "funds_code",
+            "guessed_entry_date",
+            "id",
+            "status",
+            "transaction_details"
+          ]
+        }
+      ]
+    }
+  },
+  "required": [
+    "account_identification",
+    "available_balance",
+    "final_closing_balance",
+    "final_opening_balance",
+    "sequence_number",
+    "statement_number",
+    "transaction_reference",
+    "transactions"
+  ]
+}

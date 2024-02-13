@@ -1,0 +1,14 @@
+{
+    "modules_information": {
+        "bar_information": {
+            "expense": -2625.6600000000003,
+            "income": 5274.859999999999,
+            "turnover": 2649.1999999999985
+        },
+        "rental_information": {
+            "expense": -200.6,
+            "income": 0.0,
+            "turnover": -200.6
+        }
+    }
+}
