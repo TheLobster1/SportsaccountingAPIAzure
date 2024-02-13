@@ -1,0 +1,1316 @@
+Index: validation/Validator.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import json\r\nimport jsonschema\r\n# from validation.Draft07Schema import schema\r\n\r\n# def JSONtoXMLconvert():\r\n#     xml = json2xml.Json2xml(jsonFile).to_xml()\r\n#     return xml\r\n#\r\n#\r\n# def XMLSchemaValidate():\r\n#     my_schema = xmlschema.XMLSchema('XSDSchema.xsd')\r\n#     data = my_schema.is_valid(JSONtoXMLconvert())\r\n#     print(data)\r\n\r\nwith open(r'validation\\JSON\\validation.json') as file:\r\n    schema = json.load(file)\r\n\r\n\r\ndef json_schema_validate(json_file):\r\n    try:\r\n        jsonschema.validate(json_file, schema)\r\n        return True\r\n    except jsonschema.exceptions.ValidationError:\r\n        return False\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/validation/Validator.py b/validation/Validator.py
+--- a/validation/Validator.py	(revision 844b9e9d35bbc595f0462d1bd810090deb33a76e)
++++ b/validation/Validator.py	(date 1688331128232)
+@@ -1,18 +1,9 @@
+ import json
+ import jsonschema
+-# from validation.Draft07Schema import schema
++# import xmlschema
++from lxml import etree
+ 
+-# def JSONtoXMLconvert():
+-#     xml = json2xml.Json2xml(jsonFile).to_xml()
+-#     return xml
+-#
+-#
+-# def XMLSchemaValidate():
+-#     my_schema = xmlschema.XMLSchema('XSDSchema.xsd')
+-#     data = my_schema.is_valid(JSONtoXMLconvert())
+-#     print(data)
+-
+-with open(r'validation\JSON\validation.json') as file:
++with open(r'JSON/validation.json') as file:
+     schema = json.load(file)
+ 
+ 
+@@ -22,3 +13,5 @@
+         return True
+     except jsonschema.exceptions.ValidationError:
+         return False
++
++
+Index: validation/XML/XSDSchemav2.xsd
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><xs:schema attributeFormDefault=\"unqualified\" elementFormDefault=\"qualified\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\">\r\n  <xs:element name=\"root\">\r\n    <xs:complexType>\r\n      <xs:sequence>\r\n        <xs:element name=\"file\">\r\n          <xs:complexType>\r\n            <xs:sequence>\r\n              <xs:element name=\"item\">\r\n                <xs:complexType>\r\n                  <xs:sequence>\r\n                    <xs:element name=\"transactionReference\">\r\n                        <xs:simpleType>\r\n                          <xs:restriction base=\"xs:string\">\r\n                            <xs:minLength value=\"0\"/>\r\n                            <xs:maxLength value=\"255\"/>\r\n                          </xs:restriction>\r\n                        </xs:simpleType>\r\n                    </xs:element>\r\n                    <xs:element name=\"availableBalanceId\">\r\n                      <xs:complexType>\r\n                        <xs:sequence>\r\n                          <xs:element name=\"item\">\r\n                            <xs:complexType>\r\n                              <xs:sequence>\r\n                                <xs:element name=\"amount\">\r\n                                  <xs:complexType>\r\n                                    <xs:simpleContent>\r\n                                      <xs:restriction base=\"xs:float\">\r\n                                       <xs:minLength value=\"0\"/>\r\n                                      </xs:restriction>\r\n                                    </xs:simpleContent>\r\n                                  </xs:complexType>\r\n                                </xs:element>\r\n                                <xs:element name=\"currency\">\r\n                                  <xs:complexType>\r\n                                    <xs:simpleContent>\r\n                                      <xs:restriction base=\"xs:string\">\r\n                                        <xs:minLength value=\"3\"/>\r\n                                        <xs:maxLength value=\"3\"/>\r\n                                      </xs:restriction>\r\n                                    </xs:simpleContent>\r\n                                  </xs:complexType>\r\n                                </xs:element>\r\n                                <xs:element name=\"date\">\r\n                                  <xs:complexType>\r\n                                    <xs:simpleContent>\r\n                                      <xs:restriction base=\"xs:date\">\r\n                                        <xs:maxLength value=\"11\"/>\r\n                                      </xs:restriction>\r\n                                    </xs:simpleContent>\r\n                                  </xs:complexType>\r\n                                </xs:element>\r\n                                <xs:element name=\"status\">\r\n                                  <xs:complexType>\r\n                                    <xs:simpleContent>\r\n                                      <xs:restriction base=\"xs:string\">\r\n                                        <xs:maxLength value=\"1\"/>\r\n                                      </xs:restriction>\r\n                                    </xs:simpleContent>\r\n                                  </xs:complexType>\r\n                                </xs:element>\r\n                                <xs:element name=\"type\">\r\n                                  <xs:complexType>\r\n                                    <xs:simpleContent>\r\n                                      <xs:restriction base=\"xs:string\">\r\n                                        <xs:minLength value=\"0\"/>\r\n                                        <xs:maxLength value=\"50\"/>\r\n                                      </xs:restriction>\r\n                                    </xs:simpleContent>\r\n                                  </xs:complexType>\r\n                                </xs:element>\r\n                              </xs:sequence>\r\n                              <xs:attribute type=\"xs:string\" name=\"type\"/>\r\n                            </xs:complexType>\r\n                          </xs:element>\r\n                        </xs:sequence>\r\n                        <xs:attribute type=\"xs:string\" name=\"type\"/>\r\n                      </xs:complexType>\r\n                    </xs:element>\r\n                    <xs:element name=\"finalClosingBalanceId\">\r\n                      <xs:complexType>\r\n                        <xs:sequence>\r\n                          <xs:element name=\"item\">\r\n                            <xs:complexType>\r\n                              <xs:sequence>\r\n                                <xs:element name=\"amount\">\r\n                                  <xs:complexType>\r\n                                    <xs:simpleContent>\r\n                                      <xs:restriction base=\"xs:float\">\r\n                                        <xs:minLength value=\"0\"/>\r\n                                      </xs:restriction>\r\n                                    </xs:simpleContent>\r\n                                  </xs:complexType>\r\n                                </xs:element>\r\n                                <xs:element name=\"currency\">\r\n                                  <xs:complexType>\r\n                                    <xs:simpleContent>\r\n                                      <xs:restriction base=\"xs:string\">\r\n                                        <xs:minLength value=\"3\"/>\r\n                                        <xs:maxLength value=\"3\"/>\r\n                                      </xs:restriction>\r\n                                    </xs:simpleContent>\r\n                                  </xs:complexType>\r\n                                </xs:element>\r\n                                <xs:element name=\"date\">\r\n                                  <xs:complexType>\r\n                                    <xs:simpleContent>\r\n                                      <xs:restriction base=\"xs:date\">\r\n                                        <xs:minLength value=\"0\"/>\r\n                                        <xs:maxLength value=\"11\"/>\r\n                                      </xs:restriction>\r\n                                    </xs:simpleContent>\r\n                                  </xs:complexType>\r\n                                </xs:element>\r\n                                <xs:element name=\"status\">\r\n                                  <xs:complexType>\r\n                                    <xs:simpleContent>\r\n                                      <xs:restriction base=\"xs:string\">\r\n                                        <xs:maxLength value=\"1\"/>\r\n                                      </xs:restriction>\r\n                                    </xs:simpleContent>\r\n                                  </xs:complexType>\r\n                                </xs:element>\r\n                                <xs:element name=\"type\">\r\n                                  <xs:complexType>\r\n                                    <xs:simpleContent>\r\n                                      <xs:restriction base=\"xs:string\">\r\n                                        <xs:minLength value=\"0\"/>\r\n                                        <xs:maxLength value=\"50\"/>\r\n                                      </xs:restriction>\r\n                                    </xs:simpleContent>\r\n                                  </xs:complexType>\r\n                                </xs:element>\r\n                              </xs:sequence>\r\n                              <xs:attribute type=\"xs:string\" name=\"type\"/>\r\n                            </xs:complexType>\r\n                          </xs:element>\r\n                        </xs:sequence>\r\n                        <xs:attribute type=\"xs:string\" name=\"type\"/>\r\n                      </xs:complexType>\r\n                    </xs:element>\r\n                    <xs:element name=\"finalOpeningBalanceId\">\r\n                      <xs:complexType>\r\n                        <xs:sequence>\r\n                          <xs:element name=\"item\">\r\n                            <xs:complexType>\r\n                              <xs:sequence>\r\n                                <xs:element name=\"amount\">\r\n                                  <xs:complexType>\r\n                                    <xs:simpleContent>\r\n                                      <xs:restriction base=\"xs:float\">\r\n                                       <xs:minLength value=\"0\"/>\r\n                                      </xs:restriction>\r\n                                    </xs:simpleContent>\r\n                                  </xs:complexType>\r\n                                </xs:element>\r\n                                <xs:element name=\"currency\">\r\n                                  <xs:complexType>\r\n                                    <xs:simpleContent>\r\n                                      <xs:restriction base=\"xs:string\">\r\n                                        <xs:minLength value=\"3\"/>\r\n                                        <xs:maxLength value=\"3\"/>\r\n                                      </xs:restriction>\r\n                                    </xs:simpleContent>\r\n                                  </xs:complexType>\r\n                                </xs:element>\r\n                                <xs:element name=\"date\">\r\n                                  <xs:complexType>\r\n                                    <xs:simpleContent>\r\n                                      <xs:restriction base=\"xs:date\">\r\n                                        <xs:maxLength value=\"11\"/>\r\n                                      </xs:restriction>\r\n                                    </xs:simpleContent>\r\n                                  </xs:complexType>\r\n                                </xs:element>\r\n                                <xs:element name=\"status\">\r\n                                  <xs:complexType>\r\n                                    <xs:simpleContent>\r\n                                      <xs:restriction base=\"xs:string\">\r\n                                        <xs:maxLength value=\"1\"/>\r\n                                      </xs:restriction>\r\n                                    </xs:simpleContent>\r\n                                  </xs:complexType>\r\n                                </xs:element>\r\n                                <xs:element name=\"type\">\r\n                                  <xs:complexType>\r\n                                    <xs:simpleContent>\r\n                                      <xs:restriction base=\"xs:string\">\r\n                                        <xs:minLength value=\"0\"/>\r\n                                        <xs:maxLength value=\"50\"/>\r\n                                      </xs:restriction>\r\n                                    </xs:simpleContent>\r\n                                  </xs:complexType>\r\n                                </xs:element>\r\n                              </xs:sequence>\r\n                              <xs:attribute type=\"xs:string\" name=\"type\"/>\r\n                            </xs:complexType>\r\n                          </xs:element>\r\n                        </xs:sequence>\r\n                        <xs:attribute type=\"xs:string\" name=\"type\"/>\r\n                      </xs:complexType>\r\n                    </xs:element>\r\n                    <xs:element name=\"forwardAvailableBalanceId\">\r\n                      <xs:complexType>\r\n                        <xs:sequence>\r\n                          <xs:element name=\"item\">\r\n                            <xs:complexType>\r\n                              <xs:sequence>\r\n                                <xs:element name=\"amount\">\r\n                                  <xs:complexType>\r\n                                    <xs:simpleContent>\r\n                                      <xs:restriction base=\"xs:float\">\r\n                                        <xs:minLength value=\"0\"/>\r\n                                      </xs:restriction>\r\n                                    </xs:simpleContent>\r\n                                  </xs:complexType>\r\n                                </xs:element>\r\n                                <xs:element name=\"currency\">\r\n                                  <xs:complexType>\r\n                                    <xs:simpleContent>\r\n                                      <xs:restriction base=\"xs:string\">\r\n                                        <xs:minLength value=\"3\"/>\r\n                                        <xs:maxLength value=\"3\"/>\r\n                                      </xs:restriction>\r\n                                    </xs:simpleContent>\r\n                                  </xs:complexType>\r\n                                </xs:element>\r\n                                <xs:element name=\"date\">\r\n                                  <xs:complexType>\r\n                                    <xs:simpleContent>\r\n                                      <xs:restriction base=\"xs:date\">\r\n                                        <xs:maxLength value=\"11\"/>\r\n                                      </xs:restriction>\r\n                                    </xs:simpleContent>\r\n                                  </xs:complexType>\r\n                                </xs:element>\r\n                                <xs:element name=\"status\">\r\n                                  <xs:complexType>\r\n                                    <xs:simpleContent>\r\n                                      <xs:restriction base=\"xs:string\">\r\n                                        <xs:maxLength value=\"1\"/>\r\n                                      </xs:restriction>\r\n                                    </xs:simpleContent>\r\n                                  </xs:complexType>\r\n                                </xs:element>\r\n                                <xs:element name=\"type\">\r\n                                  <xs:complexType>\r\n                                    <xs:simpleContent>\r\n                                      <xs:restriction base=\"xs:string\">\r\n                                        <xs:minLength value=\"0\"/>\r\n                                        <xs:maxLength value=\"50\"/>\r\n                                      </xs:restriction>\r\n                                    </xs:simpleContent>\r\n                                  </xs:complexType>\r\n                                </xs:element>\r\n                              </xs:sequence>\r\n                              <xs:attribute type=\"xs:string\" name=\"type\"/>\r\n                            </xs:complexType>\r\n                          </xs:element>\r\n                        </xs:sequence>\r\n                        <xs:attribute type=\"xs:string\" name=\"type\"/>\r\n                      </xs:complexType>\r\n                    </xs:element>\r\n                    <xs:element name=\"accountIdentification\">\r\n                      <xs:complexType>\r\n                        <xs:simpleContent>\r\n                          <xs:restriction base=\"xs:string\">\r\n                            <xs:minLength value=\"0\"/>\r\n                            <xs:maxLength value=\"11\"/>\r\n                          </xs:restriction>\r\n                        </xs:simpleContent>\r\n                      </xs:complexType>\r\n                    </xs:element>\r\n                    <xs:element name=\"sequenceNumber\">\r\n                      <xs:complexType>\r\n                        <xs:simpleContent>\r\n                          <xs:extension base=\"xs:string\">\r\n                            <xs:attribute type=\"xs:string\" name=\"type\"/>\r\n                          </xs:extension>\r\n                        </xs:simpleContent>\r\n                      </xs:complexType>\r\n                    </xs:element>\r\n                  </xs:sequence>\r\n                  <xs:attribute type=\"xs:string\" name=\"type\"/>\r\n                </xs:complexType>\r\n              </xs:element>\r\n            </xs:sequence>\r\n            <xs:attribute type=\"xs:string\" name=\"type\"/>\r\n          </xs:complexType>\r\n        </xs:element>\r\n        <xs:element name=\"transactions\">\r\n          <xs:complexType>\r\n            <xs:sequence>\r\n              <xs:element name=\"item\" maxOccurs=\"unbounded\" minOccurs=\"0\">\r\n                <xs:complexType>\r\n                  <xs:sequence>\r\n                    <xs:element name=\"bankReference\">\r\n                      <xs:complexType>\r\n                        <xs:simpleContent>\r\n                          <xs:restriction base=\"xs:short\">\r\n                            <xs:maxLength value=\"20\"/>\r\n                          </xs:restriction>\r\n                        </xs:simpleContent>\r\n                      </xs:complexType>\r\n                    </xs:element>\r\n                    <xs:element name=\"transactionReference\">\r\n                      <xs:complexType>\r\n                        <xs:simpleContent>\r\n                          <xs:restriction base=\"xs:string\">\r\n                            <xs:minLength value=\"0\"/>\r\n                            <xs:maxLength value=\"255\"/>\r\n                          </xs:restriction>\r\n                        </xs:simpleContent>\r\n                      </xs:complexType>\r\n                    </xs:element>\r\n                    <xs:element name=\"category\">\r\n                      <xs:complexType>\r\n                        <xs:simpleContent>\r\n                          <xs:restriction base=\"xs:string\">\r\n                            <xs:minLength value=\"0\"/>\r\n                            <xs:maxLength value=\"50\"/>\r\n                          </xs:restriction>\r\n                        </xs:simpleContent>\r\n                      </xs:complexType>\r\n                    </xs:element>\r\n                    <xs:element name=\"detailedInfo\">\r\n                      <xs:complexType>\r\n                        <xs:sequence>\r\n                          <xs:element name=\"item\">\r\n                            <xs:complexType>\r\n                              <xs:sequence>\r\n                                <xs:element name=\"amount\">\r\n                                  <xs:complexType>\r\n                                    <xs:simpleContent>\r\n                                      <xs:restriction base=\"xs:float\">\r\n                                        <xs:minLength value=\"0\"/>\r\n                                      </xs:restriction>\r\n                                    </xs:simpleContent>\r\n                                  </xs:complexType>\r\n                                </xs:element>\r\n                                <xs:element name=\"currency\">\r\n                                  <xs:complexType>\r\n                                    <xs:simpleContent>\r\n                                      <xs:restriction base=\"xs:string\">\r\n                                       <xs:minLength value=\"3\"/>\r\n                                        <xs:maxLength value=\"3\"/>\r\n                                      </xs:restriction>\r\n                                    </xs:simpleContent>\r\n                                  </xs:complexType>\r\n                                </xs:element>\r\n                                <xs:element name=\"date\">\r\n                                  <xs:complexType>\r\n                                    <xs:simpleContent>\r\n                                      <xs:restriction base=\"xs:date\">\r\n                                       <xs:minLength value=\"0\"/>\r\n                                        <xs:maxLength value=\"11\"/>\r\n                                      </xs:restriction>\r\n                                    </xs:simpleContent>\r\n                                  </xs:complexType>\r\n                                </xs:element>\r\n                                <xs:element name=\"status\">\r\n                                  <xs:complexType>\r\n                                    <xs:simpleContent>\r\n                                      <xs:restriction base=\"xs:string\">\r\n                                        <xs:maxLength value=\"1\"/>\r\n                                      </xs:restriction>\r\n                                    </xs:simpleContent>\r\n                                  </xs:complexType>\r\n                                </xs:element>\r\n                                <xs:element name=\"type\">\r\n                                  <xs:complexType>\r\n                                    <xs:simpleContent>\r\n                                      <xs:restriction base=\"xs:string\">\r\n                                        <xs:minLength value=\"0\"/>\r\n                                        <xs:maxLength value=\"50\"/>\r\n                                      </xs:restriction>\r\n                                    </xs:simpleContent>\r\n                                  </xs:complexType>\r\n                                </xs:element>\r\n                              </xs:sequence>\r\n                              <xs:attribute type=\"xs:string\" name=\"type\" use=\"optional\"/>\r\n                            </xs:complexType>\r\n                          </xs:element>\r\n                        </xs:sequence>\r\n                        <xs:attribute type=\"xs:string\" name=\"type\" use=\"optional\"/>\r\n                      </xs:complexType>\r\n                    </xs:element>\r\n                    <xs:element name=\"entryDate\">\r\n                      <xs:complexType>\r\n                        <xs:simpleContent>\r\n                          <xs:restriction base=\"xs:date\">\r\n                           <xs:minLength value=\"0\"/>\r\n                            <xs:maxLength value=\"11\"/>\r\n                          </xs:restriction>\r\n                        </xs:simpleContent>\r\n                      </xs:complexType>\r\n                    </xs:element>\r\n                    <xs:element name=\"guessedEntryDate\">\r\n                      <xs:complexType>\r\n                        <xs:simpleContent>\r\n                          <xs:restriction base=\"xs:date\">\r\n                            <xs:minLength value=\"0\"/>\r\n                            <xs:maxLength value=\"11\"/>\r\n                          </xs:restriction>\r\n                        </xs:simpleContent>\r\n                      </xs:complexType>\r\n                    </xs:element>\r\n                    <xs:element name=\"id\">\r\n                      <xs:complexType>\r\n                        <xs:simpleContent>\r\n                          <xs:restriction base=\"xs:string\">\r\n                            <xs:minLength value=\"0\"/>\r\n                            <xs:maxLength value=\"4\"/>\r\n                          </xs:restriction>\r\n                        </xs:simpleContent>\r\n                      </xs:complexType>\r\n                    </xs:element>\r\n                    <xs:element name=\"fundsCode\">\r\n                      <xs:complexType>\r\n                        <xs:simpleContent>\r\n                          <xs:restriction base=\"xs:string\">\r\n                            <xs:maxLength value=\"50\"/>\r\n                          </xs:restriction>\r\n                        </xs:simpleContent>\r\n                      </xs:complexType>\r\n                    </xs:element>\r\n                    <xs:element name=\"transactionDetails\">\r\n                      <xs:complexType>\r\n                        <xs:sequence>\r\n                          <xs:element name=\"item\">\r\n                            <xs:complexType>\r\n                              <xs:sequence>\r\n                                <xs:element name=\"transactionDetails\">\r\n                                  <xs:complexType>\r\n                                    <xs:simpleContent>\r\n                                      <xs:restriction base=\"xs:string\">\r\n                                        <xs:minLength value=\"0\"/>\r\n                                        <xs:maxLength value=\"255\"/>\r\n                                      </xs:restriction>\r\n                                    </xs:simpleContent>\r\n                                  </xs:complexType>\r\n                                </xs:element>\r\n                                <xs:element name=\"extraDetails\">\r\n                                  <xs:complexType>\r\n                                    <xs:simpleContent>\r\n                                      <xs:restriction base=\"xs:string\">\r\n                                        <xs:maxLength value=\"255\"/>\r\n                                      </xs:restriction>\r\n                                    </xs:simpleContent>\r\n                                  </xs:complexType>\r\n                                </xs:element>\r\n                                <xs:element name=\"customDetails\">\r\n                                  <xs:complexType>\r\n                                    <xs:simpleContent>\r\n                                      <xs:restriction base=\"xs:string\">\r\n                                        <xs:maxLength value=\"255\"/>\r\n                                      </xs:restriction>\r\n                                    </xs:simpleContent>\r\n                                  </xs:complexType>\r\n                                </xs:element>\r\n                              </xs:sequence>\r\n                              <xs:attribute type=\"xs:string\" name=\"type\" use=\"optional\"/>\r\n                            </xs:complexType>\r\n                          </xs:element>\r\n                        </xs:sequence>\r\n                        <xs:attribute type=\"xs:string\" name=\"type\" use=\"optional\"/>\r\n                      </xs:complexType>\r\n                    </xs:element>\r\n                  </xs:sequence>\r\n                  <xs:attribute type=\"xs:string\" name=\"type\" use=\"optional\"/>\r\n                </xs:complexType>\r\n              </xs:element>\r\n            </xs:sequence>\r\n            <xs:attribute type=\"xs:string\" name=\"type\"/>\r\n          </xs:complexType>\r\n        </xs:element>\r\n      </xs:sequence>\r\n    </xs:complexType>\r\n  </xs:element>\r\n</xs:schema>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/validation/XML/XSDSchemav2.xsd b/validation/XML/XSDSchemav2.xsd
+--- a/validation/XML/XSDSchemav2.xsd	(revision 844b9e9d35bbc595f0462d1bd810090deb33a76e)
++++ b/validation/XML/XSDSchemav2.xsd	(date 1688242272224)
+@@ -23,51 +23,40 @@
+                             <xs:complexType>
+                               <xs:sequence>
+                                 <xs:element name="amount">
+-                                  <xs:complexType>
+-                                    <xs:simpleContent>
+-                                      <xs:restriction base="xs:float">
+-                                       <xs:minLength value="0"/>
+-                                      </xs:restriction>
+-                                    </xs:simpleContent>
+-                                  </xs:complexType>
++                                  <xs:simpleType>
++                                    <xs:restriction base="xs:float">
++                                     <xs:minInclusive value="-INF"/>
++                                    </xs:restriction>
++                                  </xs:simpleType>
+                                 </xs:element>
+                                 <xs:element name="currency">
+-                                  <xs:complexType>
+-                                    <xs:simpleContent>
+-                                      <xs:restriction base="xs:string">
+-                                        <xs:minLength value="3"/>
+-                                        <xs:maxLength value="3"/>
+-                                      </xs:restriction>
+-                                    </xs:simpleContent>
+-                                  </xs:complexType>
++                                  <xs:simpleType>
++                                    <xs:restriction base="xs:string">
++                                      <xs:minLength value="3"/>
++                                      <xs:maxLength value="3"/>
++                                    </xs:restriction>
++                                  </xs:simpleType>
+                                 </xs:element>
+                                 <xs:element name="date">
+-                                  <xs:complexType>
+-                                    <xs:simpleContent>
+-                                      <xs:restriction base="xs:date">
+-                                        <xs:maxLength value="11"/>
+-                                      </xs:restriction>
+-                                    </xs:simpleContent>
+-                                  </xs:complexType>
++                                  <xs:simpleType>
++                                    <xs:restriction base="xs:date">
++                                    </xs:restriction>
++                                  </xs:simpleType>
+                                 </xs:element>
+                                 <xs:element name="status">
+-                                  <xs:complexType>
+-                                    <xs:simpleContent>
+-                                      <xs:restriction base="xs:string">
+-                                        <xs:maxLength value="1"/>
+-                                      </xs:restriction>
+-                                    </xs:simpleContent>
+-                                  </xs:complexType>
++                                  <xs:simpleType>
++                                    <xs:restriction base="xs:string">
++                                      <xs:maxLength value="1"/>
++                                    </xs:restriction>
++                                  </xs:simpleType>
+                                 </xs:element>
+                                 <xs:element name="type">
+-                                  <xs:complexType>
+-                                    <xs:simpleContent>
+-                                      <xs:restriction base="xs:string">
+-                                        <xs:minLength value="0"/>
+-                                        <xs:maxLength value="50"/>
+-                                      </xs:restriction>
+-                                    </xs:simpleContent>
+-                                  </xs:complexType>
++                                  <xs:simpleType>
++                                    <xs:restriction base="xs:string">
++                                      <xs:minLength value="0"/>
++                                      <xs:maxLength value="50"/>
++                                    </xs:restriction>
++                                  </xs:simpleType>
+                                 </xs:element>
+                               </xs:sequence>
+                               <xs:attribute type="xs:string" name="type"/>
+@@ -84,52 +73,40 @@
+                             <xs:complexType>
+                               <xs:sequence>
+                                 <xs:element name="amount">
+-                                  <xs:complexType>
+-                                    <xs:simpleContent>
+-                                      <xs:restriction base="xs:float">
+-                                        <xs:minLength value="0"/>
+-                                      </xs:restriction>
+-                                    </xs:simpleContent>
+-                                  </xs:complexType>
++                                  <xs:simpleType>
++                                    <xs:restriction base="xs:float">
++                                      <xs:minInclusive value="-INF"/>
++                                    </xs:restriction>
++                                  </xs:simpleType>
+                                 </xs:element>
+                                 <xs:element name="currency">
+-                                  <xs:complexType>
+-                                    <xs:simpleContent>
+-                                      <xs:restriction base="xs:string">
+-                                        <xs:minLength value="3"/>
+-                                        <xs:maxLength value="3"/>
+-                                      </xs:restriction>
+-                                    </xs:simpleContent>
+-                                  </xs:complexType>
++                                  <xs:simpleType>
++                                    <xs:restriction base="xs:string">
++                                      <xs:minLength value="3"/>
++                                      <xs:maxLength value="3"/>
++                                    </xs:restriction>
++                                  </xs:simpleType>
+                                 </xs:element>
+                                 <xs:element name="date">
+-                                  <xs:complexType>
+-                                    <xs:simpleContent>
+-                                      <xs:restriction base="xs:date">
+-                                        <xs:minLength value="0"/>
+-                                        <xs:maxLength value="11"/>
+-                                      </xs:restriction>
+-                                    </xs:simpleContent>
+-                                  </xs:complexType>
++                                  <xs:simpleType>
++                                    <xs:restriction base="xs:date">
++                                    </xs:restriction>
++                                  </xs:simpleType>
+                                 </xs:element>
+                                 <xs:element name="status">
+-                                  <xs:complexType>
+-                                    <xs:simpleContent>
+-                                      <xs:restriction base="xs:string">
+-                                        <xs:maxLength value="1"/>
+-                                      </xs:restriction>
+-                                    </xs:simpleContent>
+-                                  </xs:complexType>
++                                  <xs:simpleType>
++                                    <xs:restriction base="xs:string">
++                                      <xs:maxLength value="1"/>
++                                    </xs:restriction>
++                                  </xs:simpleType>
+                                 </xs:element>
+                                 <xs:element name="type">
+-                                  <xs:complexType>
+-                                    <xs:simpleContent>
+-                                      <xs:restriction base="xs:string">
+-                                        <xs:minLength value="0"/>
+-                                        <xs:maxLength value="50"/>
+-                                      </xs:restriction>
+-                                    </xs:simpleContent>
+-                                  </xs:complexType>
++                                  <xs:simpleType>
++                                    <xs:restriction base="xs:string">
++                                      <xs:minLength value="0"/>
++                                      <xs:maxLength value="50"/>
++                                    </xs:restriction>
++                                  </xs:simpleType>
+                                 </xs:element>
+                               </xs:sequence>
+                               <xs:attribute type="xs:string" name="type"/>
+@@ -146,51 +123,40 @@
+                             <xs:complexType>
+                               <xs:sequence>
+                                 <xs:element name="amount">
+-                                  <xs:complexType>
+-                                    <xs:simpleContent>
+-                                      <xs:restriction base="xs:float">
+-                                       <xs:minLength value="0"/>
+-                                      </xs:restriction>
+-                                    </xs:simpleContent>
+-                                  </xs:complexType>
++                                  <xs:simpleType>
++                                    <xs:restriction base="xs:float">
++                                     <xs:minInclusive value="-INF"/>
++                                    </xs:restriction>
++                                  </xs:simpleType>
+                                 </xs:element>
+                                 <xs:element name="currency">
+-                                  <xs:complexType>
+-                                    <xs:simpleContent>
+-                                      <xs:restriction base="xs:string">
+-                                        <xs:minLength value="3"/>
+-                                        <xs:maxLength value="3"/>
+-                                      </xs:restriction>
+-                                    </xs:simpleContent>
+-                                  </xs:complexType>
++                                  <xs:simpleType>
++                                    <xs:restriction base="xs:string">
++                                      <xs:minLength value="3"/>
++                                      <xs:maxLength value="3"/>
++                                    </xs:restriction>
++                                  </xs:simpleType>
+                                 </xs:element>
+                                 <xs:element name="date">
+-                                  <xs:complexType>
+-                                    <xs:simpleContent>
+-                                      <xs:restriction base="xs:date">
+-                                        <xs:maxLength value="11"/>
+-                                      </xs:restriction>
+-                                    </xs:simpleContent>
+-                                  </xs:complexType>
++                                  <xs:simpleType>
++                                    <xs:restriction base="xs:date">
++                                    </xs:restriction>
++                                  </xs:simpleType>
+                                 </xs:element>
+                                 <xs:element name="status">
+-                                  <xs:complexType>
+-                                    <xs:simpleContent>
+-                                      <xs:restriction base="xs:string">
+-                                        <xs:maxLength value="1"/>
+-                                      </xs:restriction>
+-                                    </xs:simpleContent>
+-                                  </xs:complexType>
++                                  <xs:simpleType>
++                                    <xs:restriction base="xs:string">
++                                      <xs:maxLength value="1"/>
++                                    </xs:restriction>
++                                  </xs:simpleType>
+                                 </xs:element>
+                                 <xs:element name="type">
+-                                  <xs:complexType>
+-                                    <xs:simpleContent>
+-                                      <xs:restriction base="xs:string">
+-                                        <xs:minLength value="0"/>
+-                                        <xs:maxLength value="50"/>
+-                                      </xs:restriction>
+-                                    </xs:simpleContent>
+-                                  </xs:complexType>
++                                  <xs:simpleType>
++                                    <xs:restriction base="xs:string">
++                                      <xs:minLength value="0"/>
++                                      <xs:maxLength value="50"/>
++                                    </xs:restriction>
++                                  </xs:simpleType>
+                                 </xs:element>
+                               </xs:sequence>
+                               <xs:attribute type="xs:string" name="type"/>
+@@ -207,51 +173,40 @@
+                             <xs:complexType>
+                               <xs:sequence>
+                                 <xs:element name="amount">
+-                                  <xs:complexType>
+-                                    <xs:simpleContent>
+-                                      <xs:restriction base="xs:float">
+-                                        <xs:minLength value="0"/>
+-                                      </xs:restriction>
+-                                    </xs:simpleContent>
+-                                  </xs:complexType>
++                                  <xs:simpleType>
++                                    <xs:restriction base="xs:float">
++                                      <xs:minInclusive value="-INF"/>
++                                    </xs:restriction>
++                                  </xs:simpleType>
+                                 </xs:element>
+                                 <xs:element name="currency">
+-                                  <xs:complexType>
+-                                    <xs:simpleContent>
+-                                      <xs:restriction base="xs:string">
+-                                        <xs:minLength value="3"/>
+-                                        <xs:maxLength value="3"/>
+-                                      </xs:restriction>
+-                                    </xs:simpleContent>
+-                                  </xs:complexType>
++                                  <xs:simpleType>
++                                    <xs:restriction base="xs:string">
++                                      <xs:minLength value="3"/>
++                                      <xs:maxLength value="3"/>
++                                    </xs:restriction>
++                                  </xs:simpleType>
+                                 </xs:element>
+                                 <xs:element name="date">
+-                                  <xs:complexType>
+-                                    <xs:simpleContent>
+-                                      <xs:restriction base="xs:date">
+-                                        <xs:maxLength value="11"/>
+-                                      </xs:restriction>
+-                                    </xs:simpleContent>
+-                                  </xs:complexType>
++                                  <xs:simpleType>
++                                    <xs:restriction base="xs:date">
++                                    </xs:restriction>
++                                  </xs:simpleType>
+                                 </xs:element>
+                                 <xs:element name="status">
+-                                  <xs:complexType>
+-                                    <xs:simpleContent>
++                                  <xs:simpleType>
+                                       <xs:restriction base="xs:string">
+                                         <xs:maxLength value="1"/>
+                                       </xs:restriction>
+-                                    </xs:simpleContent>
+-                                  </xs:complexType>
++                                  </xs:simpleType>
+                                 </xs:element>
+                                 <xs:element name="type">
+-                                  <xs:complexType>
+-                                    <xs:simpleContent>
++                                  <xs:simpleType>
+                                       <xs:restriction base="xs:string">
+                                         <xs:minLength value="0"/>
+                                         <xs:maxLength value="50"/>
+                                       </xs:restriction>
+-                                    </xs:simpleContent>
+-                                  </xs:complexType>
++                                  </xs:simpleType>
+                                 </xs:element>
+                               </xs:sequence>
+                               <xs:attribute type="xs:string" name="type"/>
+@@ -262,14 +217,12 @@
+                       </xs:complexType>
+                     </xs:element>
+                     <xs:element name="accountIdentification">
+-                      <xs:complexType>
+-                        <xs:simpleContent>
++                      <xs:simpleType>
+                           <xs:restriction base="xs:string">
+                             <xs:minLength value="0"/>
+                             <xs:maxLength value="11"/>
+                           </xs:restriction>
+-                        </xs:simpleContent>
+-                      </xs:complexType>
++                      </xs:simpleType>
+                     </xs:element>
+                     <xs:element name="sequenceNumber">
+                       <xs:complexType>
+@@ -295,33 +248,27 @@
+                 <xs:complexType>
+                   <xs:sequence>
+                     <xs:element name="bankReference">
+-                      <xs:complexType>
+-                        <xs:simpleContent>
+-                          <xs:restriction base="xs:short">
+-                            <xs:maxLength value="20"/>
+-                          </xs:restriction>
+-                        </xs:simpleContent>
+-                      </xs:complexType>
++                      <xs:simpleType>
++                        <xs:restriction base="xs:short">
++                          <xs:maxInclusive value="20"/>
++                        </xs:restriction>
++                      </xs:simpleType>
+                     </xs:element>
+                     <xs:element name="transactionReference">
+-                      <xs:complexType>
+-                        <xs:simpleContent>
+-                          <xs:restriction base="xs:string">
+-                            <xs:minLength value="0"/>
+-                            <xs:maxLength value="255"/>
+-                          </xs:restriction>
+-                        </xs:simpleContent>
+-                      </xs:complexType>
++                      <xs:simpleType>
++                        <xs:restriction base="xs:string">
++                          <xs:minLength value="0"/>
++                          <xs:maxLength value="255"/>
++                        </xs:restriction>
++                      </xs:simpleType>
+                     </xs:element>
+                     <xs:element name="category">
+-                      <xs:complexType>
+-                        <xs:simpleContent>
+-                          <xs:restriction base="xs:string">
+-                            <xs:minLength value="0"/>
+-                            <xs:maxLength value="50"/>
+-                          </xs:restriction>
+-                        </xs:simpleContent>
+-                      </xs:complexType>
++                      <xs:simpleType>
++                        <xs:restriction base="xs:string">
++                          <xs:minLength value="0"/>
++                          <xs:maxLength value="50"/>
++                        </xs:restriction>
++                      </xs:simpleType>
+                     </xs:element>
+                     <xs:element name="detailedInfo">
+                       <xs:complexType>
+@@ -330,52 +277,40 @@
+                             <xs:complexType>
+                               <xs:sequence>
+                                 <xs:element name="amount">
+-                                  <xs:complexType>
+-                                    <xs:simpleContent>
+-                                      <xs:restriction base="xs:float">
+-                                        <xs:minLength value="0"/>
+-                                      </xs:restriction>
+-                                    </xs:simpleContent>
+-                                  </xs:complexType>
++                                  <xs:simpleType>
++                                    <xs:restriction base="xs:float">
++                                      <xs:minInclusive value="-INF"/>
++                                    </xs:restriction>
++                                  </xs:simpleType>
+                                 </xs:element>
+                                 <xs:element name="currency">
+-                                  <xs:complexType>
+-                                    <xs:simpleContent>
+-                                      <xs:restriction base="xs:string">
+-                                       <xs:minLength value="3"/>
+-                                        <xs:maxLength value="3"/>
+-                                      </xs:restriction>
+-                                    </xs:simpleContent>
+-                                  </xs:complexType>
++                                  <xs:simpleType>
++                                    <xs:restriction base="xs:string">
++                                     <xs:minLength value="3"/>
++                                      <xs:maxLength value="3"/>
++                                    </xs:restriction>
++                                  </xs:simpleType>
+                                 </xs:element>
+                                 <xs:element name="date">
+-                                  <xs:complexType>
+-                                    <xs:simpleContent>
+-                                      <xs:restriction base="xs:date">
+-                                       <xs:minLength value="0"/>
+-                                        <xs:maxLength value="11"/>
+-                                      </xs:restriction>
+-                                    </xs:simpleContent>
+-                                  </xs:complexType>
++                                  <xs:simpleType>
++                                    <xs:restriction base="xs:date">
++                                    </xs:restriction>
++                                  </xs:simpleType>
+                                 </xs:element>
+                                 <xs:element name="status">
+-                                  <xs:complexType>
+-                                    <xs:simpleContent>
+-                                      <xs:restriction base="xs:string">
+-                                        <xs:maxLength value="1"/>
+-                                      </xs:restriction>
+-                                    </xs:simpleContent>
+-                                  </xs:complexType>
++                                  <xs:simpleType>
++                                    <xs:restriction base="xs:string">
++                                      <xs:maxLength value="1"/>
++                                    </xs:restriction>
++                                  </xs:simpleType>
+                                 </xs:element>
+                                 <xs:element name="type">
+-                                  <xs:complexType>
+-                                    <xs:simpleContent>
+-                                      <xs:restriction base="xs:string">
+-                                        <xs:minLength value="0"/>
+-                                        <xs:maxLength value="50"/>
+-                                      </xs:restriction>
+-                                    </xs:simpleContent>
+-                                  </xs:complexType>
++                                  <xs:simpleType>
++                                    <xs:restriction base="xs:string">
++                                      <xs:minLength value="0"/>
++                                      <xs:maxLength value="50"/>
++                                    </xs:restriction>
++                                  </xs:simpleType>
+                                 </xs:element>
+                               </xs:sequence>
+                               <xs:attribute type="xs:string" name="type" use="optional"/>
+@@ -386,43 +321,31 @@
+                       </xs:complexType>
+                     </xs:element>
+                     <xs:element name="entryDate">
+-                      <xs:complexType>
+-                        <xs:simpleContent>
+-                          <xs:restriction base="xs:date">
+-                           <xs:minLength value="0"/>
+-                            <xs:maxLength value="11"/>
+-                          </xs:restriction>
+-                        </xs:simpleContent>
+-                      </xs:complexType>
++                      <xs:simpleType>
++                        <xs:restriction base="xs:date">
++                        </xs:restriction>
++                      </xs:simpleType>
+                     </xs:element>
+                     <xs:element name="guessedEntryDate">
+-                      <xs:complexType>
+-                        <xs:simpleContent>
+-                          <xs:restriction base="xs:date">
+-                            <xs:minLength value="0"/>
+-                            <xs:maxLength value="11"/>
+-                          </xs:restriction>
+-                        </xs:simpleContent>
+-                      </xs:complexType>
++                      <xs:simpleType>
++                        <xs:restriction base="xs:date">
++                        </xs:restriction>
++                      </xs:simpleType>
+                     </xs:element>
+                     <xs:element name="id">
+-                      <xs:complexType>
+-                        <xs:simpleContent>
+-                          <xs:restriction base="xs:string">
+-                            <xs:minLength value="0"/>
+-                            <xs:maxLength value="4"/>
+-                          </xs:restriction>
+-                        </xs:simpleContent>
+-                      </xs:complexType>
++                      <xs:simpleType>
++                        <xs:restriction base="xs:string">
++                          <xs:minLength value="0"/>
++                          <xs:maxLength value="4"/>
++                        </xs:restriction>
++                      </xs:simpleType>
+                     </xs:element>
+                     <xs:element name="fundsCode">
+-                      <xs:complexType>
+-                        <xs:simpleContent>
+-                          <xs:restriction base="xs:string">
+-                            <xs:maxLength value="50"/>
+-                          </xs:restriction>
+-                        </xs:simpleContent>
+-                      </xs:complexType>
++                      <xs:simpleType>
++                        <xs:restriction base="xs:string">
++                          <xs:maxLength value="50"/>
++                        </xs:restriction>
++                      </xs:simpleType>
+                     </xs:element>
+                     <xs:element name="transactionDetails">
+                       <xs:complexType>
+@@ -431,32 +354,26 @@
+                             <xs:complexType>
+                               <xs:sequence>
+                                 <xs:element name="transactionDetails">
+-                                  <xs:complexType>
+-                                    <xs:simpleContent>
+-                                      <xs:restriction base="xs:string">
+-                                        <xs:minLength value="0"/>
+-                                        <xs:maxLength value="255"/>
+-                                      </xs:restriction>
+-                                    </xs:simpleContent>
+-                                  </xs:complexType>
++                                  <xs:simpleType>
++                                    <xs:restriction base="xs:string">
++                                      <xs:minLength value="0"/>
++                                      <xs:maxLength value="255"/>
++                                    </xs:restriction>
++                                  </xs:simpleType>
+                                 </xs:element>
+                                 <xs:element name="extraDetails">
+-                                  <xs:complexType>
+-                                    <xs:simpleContent>
+-                                      <xs:restriction base="xs:string">
+-                                        <xs:maxLength value="255"/>
+-                                      </xs:restriction>
+-                                    </xs:simpleContent>
+-                                  </xs:complexType>
++                                  <xs:simpleType>
++                                    <xs:restriction base="xs:string">
++                                      <xs:maxLength value="255"/>
++                                    </xs:restriction>
++                                  </xs:simpleType>
+                                 </xs:element>
+                                 <xs:element name="customDetails">
+-                                  <xs:complexType>
+-                                    <xs:simpleContent>
+-                                      <xs:restriction base="xs:string">
+-                                        <xs:maxLength value="255"/>
+-                                      </xs:restriction>
+-                                    </xs:simpleContent>
+-                                  </xs:complexType>
++                                  <xs:simpleType>
++                                    <xs:restriction base="xs:string">
++                                      <xs:maxLength value="255"/>
++                                    </xs:restriction>
++                                  </xs:simpleType>
+                                 </xs:element>
+                               </xs:sequence>
+                               <xs:attribute type="xs:string" name="type" use="optional"/>
+Index: validation/XML/XMLTest.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/validation/XML/XMLTest.xml b/validation/XML/XMLTest.xml
+new file mode 100644
+--- /dev/null	(date 1688330922532)
++++ b/validation/XML/XMLTest.xml	(date 1688330922532)
+@@ -0,0 +1,186 @@
++<?xml version="1.0" encoding="UTF-8" ?>
++<root>
++    <account_identification>NL69INGB0123456789EUR</account_identification>
++    <available_balance>
++        <amount>
++            <amount>564.35</amount>
++            <currency>EUR</currency>
++        </amount>
++        <date>2014-02-20</date>
++        <status>C</status>
++    </available_balance>
++    <final_closing_balance>
++        <amount>
++            <amount>564.35</amount>
++            <currency>EUR</currency>
++        </amount>
++        <date>2014-02-20</date>
++        <status>C</status>
++    </final_closing_balance>
++    <final_opening_balance>
++        <amount>
++            <amount>662.23</amount>
++            <currency>EUR</currency>
++        </amount>
++        <date>2014-02-19</date>
++        <status>C</status>
++    </final_opening_balance>
++    <forward_available_balance>
++        <amount>
++            <amount>564.35</amount>
++            <currency>EUR</currency>
++        </amount>
++        <date>2014-02-24</date>
++        <status>C</status>
++    </forward_available_balance>
++    <sequence_number/>
++    <statement_number>00000</statement_number>
++    <transaction_reference>P140220000000001</transaction_reference>
++    <transactions>
++        <amount>
++            <amount>1.56</amount>
++            <currency>EUR</currency>
++        </amount>
++        <bank_reference>00000000001005</bank_reference>
++        <currency>EUR</currency>
++        <customer_reference>EREF</customer_reference>
++        <date>2014-02-20</date>
++        <entry_date>2014-02-20</entry_date>
++        <extra_details>/TRCD/00100/</extra_details>
++        <funds_code/>
++        <guessed_entry_date>2014-02-20</guessed_entry_date>
++        <id>NTRF</id>
++        <status>C</status>
++        <transaction_details>/EREF/EV12341REP1231456T1234//CNTP/NL32INGB0000012345/INGBNL2
++            A/ING BANK NV INZAKE WEB///REMI/USTD//EV10001REP1000000T1000/</transaction_details>
++    </transactions>
++    <transactions>
++        <amount>
++            <amount>-1.57</amount>
++            <currency>EUR</currency>
++        </amount>
++        <bank_reference>00000000001006</bank_reference>
++        <currency>EUR</currency>
++        <customer_reference>PREF</customer_reference>
++        <date>2014-02-20</date>
++        <entry_date>2014-02-20</entry_date>
++        <extra_details>/TRCD/00200/</extra_details>
++        <funds_code/>
++        <guessed_entry_date>2014-02-20</guessed_entry_date>
++        <id>NTRF</id>
++        <status>D</status>
++        <transaction_details>/PREF/M000000003333333//REMI/USTD//TOTAAL 1 VZ/</transaction_details>
++    </transactions>
++    <transactions>
++        <amount>
++            <amount>1.57</amount>
++            <currency>EUR</currency>
++        </amount>
++        <bank_reference>00000000001007</bank_reference>
++        <currency>EUR</currency>
++        <customer_reference>EREF</customer_reference>
++        <date>2014-02-20</date>
++        <entry_date>2014-02-20</entry_date>
++        <extra_details>/TRCD/00190/</extra_details>
++        <funds_code/>
++        <guessed_entry_date>2014-02-20</guessed_entry_date>
++        <id>NRTI</id>
++        <status>C</status>
++        <transaction_details>/RTRN/MS03//EREF/20120123456789//CNTP/NL32INGB0000012345/INGB
++            NL2A/J.Janssen///REMI/USTD//Factuurnr 123456 Klantnr 00123/</transaction_details>
++    </transactions>
++    <transactions>
++        <amount>
++            <amount>-1.14</amount>
++            <currency>EUR</currency>
++        </amount>
++        <bank_reference>00000000001009</bank_reference>
++        <currency>EUR</currency>
++        <customer_reference>EREF</customer_reference>
++        <date>2014-02-20</date>
++        <entry_date>2014-02-20</entry_date>
++        <extra_details>/TRCD/01016/</extra_details>
++        <funds_code/>
++        <guessed_entry_date>2014-02-20</guessed_entry_date>
++        <id>NDDT</id>
++        <status>D</status>
++        <transaction_details>/EREF/EV123REP123412T1234//MARF/MND-EV01//CSID/NL32ZZZ9999999
++            91234//CNTP/NL32INGB0000012345/INGBNL2A/ING Bank N.V. inzake WeB/
++            //REMI/USTD//EV123REP123412T1234/</transaction_details>
++    </transactions>
++    <transactions>
++        <amount>
++            <amount>1.45</amount>
++            <currency>EUR</currency>
++        </amount>
++        <bank_reference>00000000001008</bank_reference>
++        <currency>EUR</currency>
++        <customer_reference>PREF</customer_reference>
++        <date>2014-02-20</date>
++        <entry_date>2014-02-20</entry_date>
++        <extra_details>/TRCD/01000/</extra_details>
++        <funds_code/>
++        <guessed_entry_date>2014-02-20</guessed_entry_date>
++        <id>NDDT</id>
++        <status>C</status>
++        <transaction_details>/PREF/M000000001111111//CSID/NL32ZZZ999999991234//REMI/USTD//
++            TOTAAL       1 POSTEN/</transaction_details>
++    </transactions>
++    <transactions>
++        <amount>
++            <amount>-12.75</amount>
++            <currency>EUR</currency>
++        </amount>
++        <bank_reference>00000000001010</bank_reference>
++        <currency>EUR</currency>
++        <customer_reference>EREF</customer_reference>
++        <date>2014-02-20</date>
++        <entry_date>2014-02-20</entry_date>
++        <extra_details>/TRCD/01315/</extra_details>
++        <funds_code/>
++        <guessed_entry_date>2014-02-20</guessed_entry_date>
++        <id>NRTI</id>
++        <status>D</status>
++        <transaction_details>/RTRN/MS03//EREF/20120501P0123478//MARF/MND-120123//CSID/NL32
++            ZZZ999999991234//CNTP/NL32INGB0000012345/INGBNL2A/J.Janssen///REM
++            I/USTD//CONTRIBUTIE FEB 2014/</transaction_details>
++    </transactions>
++    <transactions>
++        <amount>
++            <amount>32.00</amount>
++            <currency>EUR</currency>
++        </amount>
++        <bank_reference>00000000001011</bank_reference>
++        <currency>EUR</currency>
++        <customer_reference>9001123412341234</customer_reference>
++        <date>2014-02-20</date>
++        <entry_date>2014-02-20</entry_date>
++        <extra_details>/TRCD/00108/</extra_details>
++        <funds_code/>
++        <guessed_entry_date>2014-02-20</guessed_entry_date>
++        <id>NTRF</id>
++        <status>C</status>
++        <transaction_details>/EREF/15814016000676480//CNTP/NL32INGB0000012345/INGBNL2A/J.J
++            anssen///REMI/STRD/CUR/9001123412341234/</transaction_details>
++    </transactions>
++    <transactions>
++        <amount>
++            <amount>-119.00</amount>
++            <currency>EUR</currency>
++        </amount>
++        <bank_reference>00000000001012</bank_reference>
++        <currency>EUR</currency>
++        <customer_reference>1070123412341234</customer_reference>
++        <date>2014-02-20</date>
++        <entry_date>2014-02-20</entry_date>
++        <extra_details>/TRCD/00108/</extra_details>
++        <funds_code/>
++        <guessed_entry_date>2014-02-20</guessed_entry_date>
++        <id>NTRF</id>
++        <status>D</status>
++        <transaction_details>/EREF/15614016000384600//CNTP/NL32INGB0000012345/INGBNL2A/ING
++            BANK NV///REMI/STRD/CUR/1070123412341234/
++            /SUM/4/4/134,46/36,58/
++            -}</transaction_details>
++    </transactions>
++</root>
+\ No newline at end of file
+Index: .idea/workspace.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<project version=\"4\">\r\n  <component name=\"AutoImportSettings\">\r\n    <option name=\"autoReloadType\" value=\"SELECTIVE\" />\r\n  </component>\r\n  <component name=\"ChangeListManager\">\r\n    <list default=\"true\" id=\"8bf00196-e52c-4fe4-81f7-01f9b914d32d\" name=\"Changes\" comment=\"search keyword functionality\">\r\n      <change afterPath=\"$PROJECT_DIR$/../Backup/backup.sql\" afterDir=\"false\" />\r\n      <change afterPath=\"$PROJECT_DIR$/../Backup/backup_2023-04-05.sql\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/../BaseApplication/.vs/BaseApplication/FileContentIndex/bdf4683f-eae1-4788-a183-f873e93bb909.vsidx\" beforeDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/../BaseApplication/.vs/BaseApplication/v17/.suo\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/../BaseApplication/.vs/BaseApplication/v17/.suo\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/../BaseApplication/BaseApplication/Form1.Designer.cs\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/../BaseApplication/BaseApplication/Form1.Designer.cs\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/../BaseApplication/BaseApplication/Form1.cs\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/../BaseApplication/BaseApplication/Form1.cs\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/../BaseApplication/BaseApplication/bin/Debug/BaseApplication.exe\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/../BaseApplication/BaseApplication/bin/Debug/BaseApplication.exe\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/../BaseApplication/BaseApplication/bin/Debug/BaseApplication.pdb\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/../BaseApplication/BaseApplication/bin/Debug/BaseApplication.pdb\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/../BaseApplication/BaseApplication/obj/Debug/BaseApplication.csproj.CoreCompileInputs.cache\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/../BaseApplication/BaseApplication/obj/Debug/BaseApplication.csproj.CoreCompileInputs.cache\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/../BaseApplication/BaseApplication/obj/Debug/BaseApplication.csproj.GenerateResource.cache\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/../BaseApplication/BaseApplication/obj/Debug/BaseApplication.csproj.GenerateResource.cache\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/../BaseApplication/BaseApplication/obj/Debug/BaseApplication.exe\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/../BaseApplication/BaseApplication/obj/Debug/BaseApplication.exe\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/../BaseApplication/BaseApplication/obj/Debug/BaseApplication.pdb\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/../BaseApplication/BaseApplication/obj/Debug/BaseApplication.pdb\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/../BaseApplication/BaseApplication/obj/Debug/DesignTimeResolveAssemblyReferencesInput.cache\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/../BaseApplication/BaseApplication/obj/Debug/DesignTimeResolveAssemblyReferencesInput.cache\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/.idea/workspace.xml\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/.idea/workspace.xml\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/DBCommunication.py\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/DBCommunication.py\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/PythonAPI.iml\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/PythonAPI.iml\" afterDir=\"false\" />\r\n    </list>\r\n    <option name=\"SHOW_DIALOG\" value=\"false\" />\r\n    <option name=\"HIGHLIGHT_CONFLICTS\" value=\"true\" />\r\n    <option name=\"HIGHLIGHT_NON_ACTIVE_CHANGELIST\" value=\"false\" />\r\n    <option name=\"LAST_RESOLUTION\" value=\"IGNORE\" />\r\n  </component>\r\n  <component name=\"FileTemplateManagerImpl\">\r\n    <option name=\"RECENT_TEMPLATES\">\r\n      <list>\r\n        <option value=\"Python Script\" />\r\n      </list>\r\n    </option>\r\n  </component>\r\n  <component name=\"Git.Settings\">\r\n    <option name=\"RECENT_GIT_ROOT_PATH\" value=\"$PROJECT_DIR$/..\" />\r\n  </component>\r\n  <component name=\"MarkdownSettingsMigration\">\r\n    <option name=\"stateVersion\" value=\"1\" />\r\n  </component>\r\n  <component name=\"ProjectId\" id=\"2NQqLIMIv4m13kAVTQMLdf0iCW2\" />\r\n  <component name=\"ProjectViewState\">\r\n    <option name=\"hideEmptyMiddlePackages\" value=\"true\" />\r\n    <option name=\"showLibraryContents\" value=\"true\" />\r\n  </component>\r\n  <component name=\"PropertiesComponent\">{\r\n  &quot;keyToString&quot;: {\r\n    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,\r\n    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,\r\n    &quot;RunOnceActivity.go.formatter.settings.were.checked&quot;: &quot;true&quot;,\r\n    &quot;RunOnceActivity.go.migrated.go.modules.settings&quot;: &quot;true&quot;,\r\n    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,\r\n    &quot;git-widget-placeholder&quot;: &quot;dev&quot;,\r\n    &quot;go.import.settings.migrated&quot;: &quot;true&quot;,\r\n    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,\r\n    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,\r\n    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,\r\n    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,\r\n    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,\r\n    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,\r\n    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,\r\n    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;\r\n  }\r\n}</component>\r\n  <component name=\"RunManager\">\r\n    <configuration name=\"DBCommunication\" type=\"PythonConfigurationType\" factoryName=\"Python\" temporary=\"true\" nameIsGenerated=\"true\">\r\n      <module name=\"PythonAPI\" />\r\n      <option name=\"INTERPRETER_OPTIONS\" value=\"\" />\r\n      <option name=\"PARENT_ENVS\" value=\"true\" />\r\n      <envs>\r\n        <env name=\"PYTHONUNBUFFERED\" value=\"1\" />\r\n      </envs>\r\n      <option name=\"SDK_HOME\" value=\"\" />\r\n      <option name=\"WORKING_DIRECTORY\" value=\"$PROJECT_DIR$\" />\r\n      <option name=\"IS_MODULE_SDK\" value=\"true\" />\r\n      <option name=\"ADD_CONTENT_ROOTS\" value=\"true\" />\r\n      <option name=\"ADD_SOURCE_ROOTS\" value=\"true\" />\r\n      <EXTENSION ID=\"PythonCoverageRunConfigurationExtension\" runner=\"coverage.py\" />\r\n      <option name=\"SCRIPT_NAME\" value=\"$PROJECT_DIR$/DBCommunication.py\" />\r\n      <option name=\"PARAMETERS\" value=\"\" />\r\n      <option name=\"SHOW_COMMAND_LINE\" value=\"false\" />\r\n      <option name=\"EMULATE_TERMINAL\" value=\"false\" />\r\n      <option name=\"MODULE_MODE\" value=\"false\" />\r\n      <option name=\"REDIRECT_INPUT\" value=\"false\" />\r\n      <option name=\"INPUT_FILE\" value=\"\" />\r\n      <method v=\"2\" />\r\n    </configuration>\r\n    <recent_temporary>\r\n      <list>\r\n        <item itemvalue=\"Python.DBCommunication\" />\r\n      </list>\r\n    </recent_temporary>\r\n  </component>\r\n  <component name=\"SpellCheckerSettings\" RuntimeDictionaries=\"0\" Folders=\"0\" CustomDictionaries=\"0\" DefaultDictionary=\"application-level\" UseSingleDictionary=\"true\" transferred=\"true\" />\r\n  <component name=\"TaskManager\">\r\n    <task active=\"true\" id=\"Default\" summary=\"Default task\">\r\n      <changelist id=\"8bf00196-e52c-4fe4-81f7-01f9b914d32d\" name=\"Changes\" comment=\"\" />\r\n      <created>1679606599803</created>\r\n      <option name=\"number\" value=\"Default\" />\r\n      <option name=\"presentableId\" value=\"Default\" />\r\n      <updated>1679606599803</updated>\r\n      <workItem from=\"1679606601044\" duration=\"3588000\" />\r\n      <workItem from=\"1679663527192\" duration=\"4845000\" />\r\n      <workItem from=\"1679688247870\" duration=\"7875000\" />\r\n      <workItem from=\"1679790458567\" duration=\"56000\" />\r\n      <workItem from=\"1679915135642\" duration=\"1867000\" />\r\n      <workItem from=\"1679988440087\" duration=\"6429000\" />\r\n      <workItem from=\"1680001812504\" duration=\"4623000\" />\r\n      <workItem from=\"1680023762966\" duration=\"6750000\" />\r\n      <workItem from=\"1680097180014\" duration=\"5846000\" />\r\n      <workItem from=\"1680123926385\" duration=\"7461000\" />\r\n      <workItem from=\"1680701541155\" duration=\"2805000\" />\r\n      <workItem from=\"1680774553406\" duration=\"1784000\" />\r\n    </task>\r\n    <task id=\"LOCAL-00001\" summary=\"user can now add custom description and export modules summary as json\">\r\n      <created>1679607445325</created>\r\n      <option name=\"number\" value=\"00001\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00001\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1679607445325</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00002\" summary=\"module summary now imports both json and xml\">\r\n      <created>1679674716138</created>\r\n      <option name=\"number\" value=\"00002\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00002\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1679674716138</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00003\" summary=\"search keyword functionality\">\r\n      <created>1679704214611</created>\r\n      <option name=\"number\" value=\"00003\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00003\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1679704214611</updated>\r\n    </task>\r\n    <option name=\"localTasksCounter\" value=\"4\" />\r\n    <servers />\r\n  </component>\r\n  <component name=\"TypeScriptGeneratedFilesManager\">\r\n    <option name=\"version\" value=\"3\" />\r\n  </component>\r\n  <component name=\"VcsManagerConfiguration\">\r\n    <MESSAGE value=\"user can now add custom description and export modules summary as json\" />\r\n    <MESSAGE value=\"module summary now imports both json and xml\" />\r\n    <MESSAGE value=\"search keyword functionality\" />\r\n    <option name=\"LAST_COMMIT_MESSAGE\" value=\"search keyword functionality\" />\r\n  </component>\r\n  <component name=\"VgoProject\">\r\n    <settings-migrated>true</settings-migrated>\r\n  </component>\r\n  <component name=\"com.intellij.coverage.CoverageDataManagerImpl\">\r\n    <SUITE FILE_PATH=\"coverage/PythonAPI$DBCommunication.coverage\" NAME=\"DBCommunication Coverage Results\" MODIFIED=\"1680707410672\" SOURCE_PROVIDER=\"com.intellij.coverage.DefaultCoverageFileProvider\" RUNNER=\"coverage.py\" COVERAGE_BY_TEST_ENABLED=\"true\" COVERAGE_TRACING_ENABLED=\"false\" WORKING_DIRECTORY=\"$PROJECT_DIR$\" />\r\n    <SUITE FILE_PATH=\"coverage/DBCommunication_py$DBCommunication.coverage\" NAME=\"DBCommunication Coverage Results\" MODIFIED=\"1680774926352\" SOURCE_PROVIDER=\"com.intellij.coverage.DefaultCoverageFileProvider\" RUNNER=\"coverage.py\" COVERAGE_BY_TEST_ENABLED=\"true\" COVERAGE_TRACING_ENABLED=\"false\" WORKING_DIRECTORY=\"$PROJECT_DIR$\" />\r\n  </component>\r\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/workspace.xml b/.idea/workspace.xml
+--- a/.idea/workspace.xml	(revision 844b9e9d35bbc595f0462d1bd810090deb33a76e)
++++ b/.idea/workspace.xml	(date 1688331015587)
+@@ -5,22 +5,22 @@
+   </component>
+   <component name="ChangeListManager">
+     <list default="true" id="8bf00196-e52c-4fe4-81f7-01f9b914d32d" name="Changes" comment="search keyword functionality">
+-      <change afterPath="$PROJECT_DIR$/../Backup/backup.sql" afterDir="false" />
+-      <change afterPath="$PROJECT_DIR$/../Backup/backup_2023-04-05.sql" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/../BaseApplication/.vs/BaseApplication/FileContentIndex/bdf4683f-eae1-4788-a183-f873e93bb909.vsidx" beforeDir="false" />
++      <change afterPath="$PROJECT_DIR$/validation/XML/XMLTest.xml" afterDir="false" />
++      <change afterPath="$PROJECT_DIR$/validation/XML/XSDSchemav3.xsd" afterDir="false" />
++      <change afterPath="$PROJECT_DIR$/validation/whatever.xml" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/../BaseApplication/.vs/BaseApplication/FileContentIndex/f38b83c5-2315-4caa-9c1e-556864466fcc.vsidx" beforeDir="false" />
+       <change beforePath="$PROJECT_DIR$/../BaseApplication/.vs/BaseApplication/v17/.suo" beforeDir="false" afterPath="$PROJECT_DIR$/../BaseApplication/.vs/BaseApplication/v17/.suo" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/../BaseApplication/BaseApplication/Form1.Designer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../BaseApplication/BaseApplication/Form1.Designer.cs" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/../BaseApplication/BaseApplication/Form1.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../BaseApplication/BaseApplication/Form1.cs" afterDir="false" />
+       <change beforePath="$PROJECT_DIR$/../BaseApplication/BaseApplication/bin/Debug/BaseApplication.exe" beforeDir="false" afterPath="$PROJECT_DIR$/../BaseApplication/BaseApplication/bin/Debug/BaseApplication.exe" afterDir="false" />
+       <change beforePath="$PROJECT_DIR$/../BaseApplication/BaseApplication/bin/Debug/BaseApplication.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/../BaseApplication/BaseApplication/bin/Debug/BaseApplication.pdb" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/../BaseApplication/BaseApplication/obj/Debug/BaseApplication.csproj.AssemblyReference.cache" beforeDir="false" afterPath="$PROJECT_DIR$/../BaseApplication/BaseApplication/obj/Debug/BaseApplication.csproj.AssemblyReference.cache" afterDir="false" />
+       <change beforePath="$PROJECT_DIR$/../BaseApplication/BaseApplication/obj/Debug/BaseApplication.csproj.CoreCompileInputs.cache" beforeDir="false" afterPath="$PROJECT_DIR$/../BaseApplication/BaseApplication/obj/Debug/BaseApplication.csproj.CoreCompileInputs.cache" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/../BaseApplication/BaseApplication/obj/Debug/BaseApplication.csproj.FileListAbsolute.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../BaseApplication/BaseApplication/obj/Debug/BaseApplication.csproj.FileListAbsolute.txt" afterDir="false" />
+       <change beforePath="$PROJECT_DIR$/../BaseApplication/BaseApplication/obj/Debug/BaseApplication.csproj.GenerateResource.cache" beforeDir="false" afterPath="$PROJECT_DIR$/../BaseApplication/BaseApplication/obj/Debug/BaseApplication.csproj.GenerateResource.cache" afterDir="false" />
+       <change beforePath="$PROJECT_DIR$/../BaseApplication/BaseApplication/obj/Debug/BaseApplication.exe" beforeDir="false" afterPath="$PROJECT_DIR$/../BaseApplication/BaseApplication/obj/Debug/BaseApplication.exe" afterDir="false" />
+       <change beforePath="$PROJECT_DIR$/../BaseApplication/BaseApplication/obj/Debug/BaseApplication.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/../BaseApplication/BaseApplication/obj/Debug/BaseApplication.pdb" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/../BaseApplication/BaseApplication/obj/Debug/DesignTimeResolveAssemblyReferencesInput.cache" beforeDir="false" afterPath="$PROJECT_DIR$/../BaseApplication/BaseApplication/obj/Debug/DesignTimeResolveAssemblyReferencesInput.cache" afterDir="false" />
+       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/DBCommunication.py" beforeDir="false" afterPath="$PROJECT_DIR$/DBCommunication.py" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/PythonAPI.iml" beforeDir="false" afterPath="$PROJECT_DIR$/PythonAPI.iml" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/validation/Validator.py" beforeDir="false" afterPath="$PROJECT_DIR$/validation/Validator.py" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/validation/XML/XSDSchemav2.xsd" beforeDir="false" afterPath="$PROJECT_DIR$/validation/XML/XSDSchemav2.xsd" afterDir="false" />
+     </list>
+     <option name="SHOW_DIALOG" value="false" />
+     <option name="HIGHLIGHT_CONFLICTS" value="true" />
+@@ -58,12 +58,18 @@
+     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+     &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
++    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+     &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
+     &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
+     &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
+     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+   }
+ }</component>
++  <component name="RecentsManager">
++    <key name="MoveFile.RECENT_KEYS">
++      <recent name="C:\Users\Chris\Desktop\SportsAccounting\PythonAPI\validation" />
++    </key>
++  </component>
+   <component name="RunManager">
+     <configuration name="DBCommunication" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+       <module name="PythonAPI" />
+@@ -113,6 +119,12 @@
+       <workItem from="1680123926385" duration="7461000" />
+       <workItem from="1680701541155" duration="2805000" />
+       <workItem from="1680774553406" duration="1784000" />
++      <workItem from="1688122134702" duration="51000" />
++      <workItem from="1688122204238" duration="15954000" />
++      <workItem from="1688237340771" duration="3551000" />
++      <workItem from="1688241832360" duration="28000" />
++      <workItem from="1688241877938" duration="1023000" />
++      <workItem from="1688315236553" duration="3075000" />
+     </task>
+     <task id="LOCAL-00001" summary="user can now add custom description and export modules summary as json">
+       <created>1679607445325</created>
+@@ -141,6 +153,9 @@
+   <component name="TypeScriptGeneratedFilesManager">
+     <option name="version" value="3" />
+   </component>
++  <component name="UnknownFeatures">
++    <option featureType="com.intellij.configurationType" implementationName="PythonConfigurationType" />
++  </component>
+   <component name="VcsManagerConfiguration">
+     <MESSAGE value="user can now add custom description and export modules summary as json" />
+     <MESSAGE value="module summary now imports both json and xml" />
+@@ -151,7 +166,6 @@
+     <settings-migrated>true</settings-migrated>
+   </component>
+   <component name="com.intellij.coverage.CoverageDataManagerImpl">
+-    <SUITE FILE_PATH="coverage/PythonAPI$DBCommunication.coverage" NAME="DBCommunication Coverage Results" MODIFIED="1680707410672" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+-    <SUITE FILE_PATH="coverage/DBCommunication_py$DBCommunication.coverage" NAME="DBCommunication Coverage Results" MODIFIED="1680774926352" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
++    <SUITE FILE_PATH="coverage/DBCommunication_py$DBCommunication.coverage" NAME="DBCommunication Coverage Results" MODIFIED="1688331006811" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+   </component>
+ </project>
+\ No newline at end of file
+Index: ../BaseApplication/BaseApplication/obj/Debug/BaseApplication.csproj.CoreCompileInputs.cache
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>cf649f77362c8e7f3d8e2cab9419c02151cbbc87\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/../BaseApplication/BaseApplication/obj/Debug/BaseApplication.csproj.CoreCompileInputs.cache b/../BaseApplication/BaseApplication/obj/Debug/BaseApplication.csproj.CoreCompileInputs.cache
+--- a/../BaseApplication/BaseApplication/obj/Debug/BaseApplication.csproj.CoreCompileInputs.cache	(revision 844b9e9d35bbc595f0462d1bd810090deb33a76e)
++++ b/../BaseApplication/BaseApplication/obj/Debug/BaseApplication.csproj.CoreCompileInputs.cache	(date 1688154605323)
+@@ -1,1 +1,1 @@
+-cf649f77362c8e7f3d8e2cab9419c02151cbbc87
++6a0a4da8b21375afb9b01cf9044c743b40cf61dc
+Index: ../BaseApplication/BaseApplication/obj/Debug/BaseApplication.csproj.FileListAbsolute.txt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>C:\\MainStuff\\Uni\\Project6.1\\SportsAccounting2D\\BaseApplication\\BaseApplication\\bin\\Debug\\BaseApplication.exe.config\r\nC:\\MainStuff\\Uni\\Project6.1\\SportsAccounting2D\\BaseApplication\\BaseApplication\\bin\\Debug\\BaseApplication.exe\r\nC:\\MainStuff\\Uni\\Project6.1\\SportsAccounting2D\\BaseApplication\\BaseApplication\\bin\\Debug\\BaseApplication.pdb\r\nC:\\MainStuff\\Uni\\Project6.1\\SportsAccounting2D\\BaseApplication\\BaseApplication\\obj\\Debug\\BaseApplication.csproj.AssemblyReference.cache\r\nC:\\MainStuff\\Uni\\Project6.1\\SportsAccounting2D\\BaseApplication\\BaseApplication\\obj\\Debug\\BaseApplication.csproj.SuggestedBindingRedirects.cache\r\nC:\\MainStuff\\Uni\\Project6.1\\SportsAccounting2D\\BaseApplication\\BaseApplication\\obj\\Debug\\BaseApplication.Properties.Resources.resources\r\nC:\\MainStuff\\Uni\\Project6.1\\SportsAccounting2D\\BaseApplication\\BaseApplication\\obj\\Debug\\BaseApplication.csproj.GenerateResource.cache\r\nC:\\MainStuff\\Uni\\Project6.1\\SportsAccounting2D\\BaseApplication\\BaseApplication\\obj\\Debug\\BaseApplication.csproj.CoreCompileInputs.cache\r\nC:\\MainStuff\\Uni\\Project6.1\\SportsAccounting2D\\BaseApplication\\BaseApplication\\obj\\Debug\\BaseApplication.exe\r\nC:\\MainStuff\\Uni\\Project6.1\\SportsAccounting2D\\BaseApplication\\BaseApplication\\obj\\Debug\\BaseApplication.pdb\r\nC:\\MainStuff\\Uni\\Project6.1\\SportsAccounting2D\\BaseApplication\\BaseApplication\\obj\\Debug\\BaseApplication.Form1.resources\r\nC:\\Users\\voras\\source\\repos\\FinalAss\\SportsAccounting2D\\BaseApplication\\BaseApplication\\obj\\Debug\\BaseApplication.csproj.AssemblyReference.cache\r\nC:\\Users\\voras\\source\\repos\\FinalAss\\SportsAccounting2D\\BaseApplication\\BaseApplication\\obj\\Debug\\BaseApplication.csproj.SuggestedBindingRedirects.cache\r\nC:\\Users\\voras\\source\\repos\\FinalAss\\SportsAccounting2D\\BaseApplication\\BaseApplication\\obj\\Debug\\BaseApplication.Form1.resources\r\nC:\\Users\\voras\\source\\repos\\FinalAss\\SportsAccounting2D\\BaseApplication\\BaseApplication\\obj\\Debug\\BaseApplication.Properties.Resources.resources\r\nC:\\Users\\voras\\source\\repos\\FinalAss\\SportsAccounting2D\\BaseApplication\\BaseApplication\\obj\\Debug\\BaseApplication.csproj.GenerateResource.cache\r\nC:\\Users\\voras\\source\\repos\\FinalAss\\SportsAccounting2D\\BaseApplication\\BaseApplication\\obj\\Debug\\BaseApplication.csproj.CoreCompileInputs.cache\r\nC:\\Users\\voras\\source\\repos\\FinalAss\\SportsAccounting2D\\BaseApplication\\BaseApplication\\obj\\Debug\\BaseApplication.exe\r\nC:\\Users\\voras\\source\\repos\\FinalAss\\SportsAccounting2D\\BaseApplication\\BaseApplication\\obj\\Debug\\BaseApplication.pdb\r\nC:\\Users\\voras\\source\\repos\\FinalAss\\SportsAccounting2D\\BaseApplication\\BaseApplication\\bin\\Debug\\BaseApplication.exe.config\r\nC:\\Users\\voras\\source\\repos\\FinalAss\\SportsAccounting2D\\BaseApplication\\BaseApplication\\bin\\Debug\\BaseApplication.exe\r\nC:\\Users\\voras\\source\\repos\\FinalAss\\SportsAccounting2D\\BaseApplication\\BaseApplication\\bin\\Debug\\BaseApplication.pdb\r\nC:\\Users\\voras\\source\\repos\\FinalAss\\SportsAccounting2D\\BaseApplication\\BaseApplication\\bin\\Debug\\Microsoft.AspNetCore.Cryptography.Internal.dll\r\nC:\\Users\\voras\\source\\repos\\FinalAss\\SportsAccounting2D\\BaseApplication\\BaseApplication\\bin\\Debug\\Microsoft.AspNetCore.Cryptography.KeyDerivation.dll\r\nC:\\Users\\voras\\source\\repos\\FinalAss\\SportsAccounting2D\\BaseApplication\\BaseApplication\\bin\\Debug\\Microsoft.Bcl.AsyncInterfaces.dll\r\nC:\\Users\\voras\\source\\repos\\FinalAss\\SportsAccounting2D\\BaseApplication\\BaseApplication\\bin\\Debug\\Microsoft.Extensions.DependencyInjection.Abstractions.dll\r\nC:\\Users\\voras\\source\\repos\\FinalAss\\SportsAccounting2D\\BaseApplication\\BaseApplication\\bin\\Debug\\Microsoft.Extensions.DependencyInjection.dll\r\nC:\\Users\\voras\\source\\repos\\FinalAss\\SportsAccounting2D\\BaseApplication\\BaseApplication\\bin\\Debug\\Microsoft.Extensions.Identity.Core.dll\r\nC:\\Users\\voras\\source\\repos\\FinalAss\\SportsAccounting2D\\BaseApplication\\BaseApplication\\bin\\Debug\\Microsoft.Extensions.Logging.Abstractions.dll\r\nC:\\Users\\voras\\source\\repos\\FinalAss\\SportsAccounting2D\\BaseApplication\\BaseApplication\\bin\\Debug\\Microsoft.Extensions.Logging.dll\r\nC:\\Users\\voras\\source\\repos\\FinalAss\\SportsAccounting2D\\BaseApplication\\BaseApplication\\bin\\Debug\\Microsoft.Extensions.Options.dll\r\nC:\\Users\\voras\\source\\repos\\FinalAss\\SportsAccounting2D\\BaseApplication\\BaseApplication\\bin\\Debug\\Microsoft.Extensions.Primitives.dll\r\nC:\\Users\\voras\\source\\repos\\FinalAss\\SportsAccounting2D\\BaseApplication\\BaseApplication\\bin\\Debug\\System.Buffers.dll\r\nC:\\Users\\voras\\source\\repos\\FinalAss\\SportsAccounting2D\\BaseApplication\\BaseApplication\\bin\\Debug\\System.ComponentModel.Annotations.dll\r\nC:\\Users\\voras\\source\\repos\\FinalAss\\SportsAccounting2D\\BaseApplication\\BaseApplication\\bin\\Debug\\System.Diagnostics.DiagnosticSource.dll\r\nC:\\Users\\voras\\source\\repos\\FinalAss\\SportsAccounting2D\\BaseApplication\\BaseApplication\\bin\\Debug\\System.Memory.dll\r\nC:\\Users\\voras\\source\\repos\\FinalAss\\SportsAccounting2D\\BaseApplication\\BaseApplication\\bin\\Debug\\System.Numerics.Vectors.dll\r\nC:\\Users\\voras\\source\\repos\\FinalAss\\SportsAccounting2D\\BaseApplication\\BaseApplication\\bin\\Debug\\System.Runtime.CompilerServices.Unsafe.dll\r\nC:\\Users\\voras\\source\\repos\\FinalAss\\SportsAccounting2D\\BaseApplication\\BaseApplication\\bin\\Debug\\System.Threading.Tasks.Extensions.dll\r\nC:\\Users\\voras\\source\\repos\\FinalAss\\SportsAccounting2D\\BaseApplication\\BaseApplication\\bin\\Debug\\System.ValueTuple.dll\r\nC:\\Users\\voras\\source\\repos\\FinalAss\\SportsAccounting2D\\BaseApplication\\BaseApplication\\bin\\Debug\\Microsoft.AspNetCore.Cryptography.Internal.xml\r\nC:\\Users\\voras\\source\\repos\\FinalAss\\SportsAccounting2D\\BaseApplication\\BaseApplication\\bin\\Debug\\Microsoft.AspNetCore.Cryptography.KeyDerivation.xml\r\nC:\\Users\\voras\\source\\repos\\FinalAss\\SportsAccounting2D\\BaseApplication\\BaseApplication\\bin\\Debug\\Microsoft.Bcl.AsyncInterfaces.xml\r\nC:\\Users\\voras\\source\\repos\\FinalAss\\SportsAccounting2D\\BaseApplication\\BaseApplication\\bin\\Debug\\Microsoft.Extensions.DependencyInjection.xml\r\nC:\\Users\\voras\\source\\repos\\FinalAss\\SportsAccounting2D\\BaseApplication\\BaseApplication\\bin\\Debug\\Microsoft.Extensions.DependencyInjection.Abstractions.xml\r\nC:\\Users\\voras\\source\\repos\\FinalAss\\SportsAccounting2D\\BaseApplication\\BaseApplication\\bin\\Debug\\Microsoft.Extensions.Identity.Core.xml\r\nC:\\Users\\voras\\source\\repos\\FinalAss\\SportsAccounting2D\\BaseApplication\\BaseApplication\\bin\\Debug\\Microsoft.Extensions.Logging.xml\r\nC:\\Users\\voras\\source\\repos\\FinalAss\\SportsAccounting2D\\BaseApplication\\BaseApplication\\bin\\Debug\\Microsoft.Extensions.Logging.Abstractions.xml\r\nC:\\Users\\voras\\source\\repos\\FinalAss\\SportsAccounting2D\\BaseApplication\\BaseApplication\\bin\\Debug\\Microsoft.Extensions.Options.xml\r\nC:\\Users\\voras\\source\\repos\\FinalAss\\SportsAccounting2D\\BaseApplication\\BaseApplication\\bin\\Debug\\Microsoft.Extensions.Primitives.xml\r\nC:\\Users\\voras\\source\\repos\\FinalAss\\SportsAccounting2D\\BaseApplication\\BaseApplication\\bin\\Debug\\System.Buffers.xml\r\nC:\\Users\\voras\\source\\repos\\FinalAss\\SportsAccounting2D\\BaseApplication\\BaseApplication\\bin\\Debug\\System.Diagnostics.DiagnosticSource.xml\r\nC:\\Users\\voras\\source\\repos\\FinalAss\\SportsAccounting2D\\BaseApplication\\BaseApplication\\bin\\Debug\\System.Memory.xml\r\nC:\\Users\\voras\\source\\repos\\FinalAss\\SportsAccounting2D\\BaseApplication\\BaseApplication\\bin\\Debug\\System.Numerics.Vectors.xml\r\nC:\\Users\\voras\\source\\repos\\FinalAss\\SportsAccounting2D\\BaseApplication\\BaseApplication\\bin\\Debug\\System.Runtime.CompilerServices.Unsafe.xml\r\nC:\\Users\\voras\\source\\repos\\FinalAss\\SportsAccounting2D\\BaseApplication\\BaseApplication\\bin\\Debug\\System.Threading.Tasks.Extensions.xml\r\nC:\\Users\\voras\\source\\repos\\FinalAss\\SportsAccounting2D\\BaseApplication\\BaseApplication\\bin\\Debug\\System.ValueTuple.xml\r\nC:\\Users\\voras\\source\\repos\\FinalAss\\SportsAccounting2D\\BaseApplication\\BaseApplication\\obj\\Debug\\BaseApplication.csproj.CopyComplete\r\nC:\\MainStuff\\Uni\\Project6.1\\SportsAccounting2D\\BaseApplication\\BaseApplication\\bin\\Debug\\mongocrypt.dll\r\nC:\\MainStuff\\Uni\\Project6.1\\SportsAccounting2D\\BaseApplication\\BaseApplication\\bin\\Debug\\AWSSDK.Core.dll\r\nC:\\MainStuff\\Uni\\Project6.1\\SportsAccounting2D\\BaseApplication\\BaseApplication\\bin\\Debug\\AWSSDK.SecurityToken.dll\r\nC:\\MainStuff\\Uni\\Project6.1\\SportsAccounting2D\\BaseApplication\\BaseApplication\\bin\\Debug\\DnsClient.dll\r\nC:\\MainStuff\\Uni\\Project6.1\\SportsAccounting2D\\BaseApplication\\BaseApplication\\bin\\Debug\\Microsoft.AspNetCore.Cryptography.Internal.dll\r\nC:\\MainStuff\\Uni\\Project6.1\\SportsAccounting2D\\BaseApplication\\BaseApplication\\bin\\Debug\\Microsoft.AspNetCore.Cryptography.KeyDerivation.dll\r\nC:\\MainStuff\\Uni\\Project6.1\\SportsAccounting2D\\BaseApplication\\BaseApplication\\bin\\Debug\\Microsoft.Bcl.AsyncInterfaces.dll\r\nC:\\MainStuff\\Uni\\Project6.1\\SportsAccounting2D\\BaseApplication\\BaseApplication\\bin\\Debug\\Microsoft.Extensions.DependencyInjection.Abstractions.dll\r\nC:\\MainStuff\\Uni\\Project6.1\\SportsAccounting2D\\BaseApplication\\BaseApplication\\bin\\Debug\\Microsoft.Extensions.DependencyInjection.dll\r\nC:\\MainStuff\\Uni\\Project6.1\\SportsAccounting2D\\BaseApplication\\BaseApplication\\bin\\Debug\\Microsoft.Extensions.Identity.Core.dll\r\nC:\\MainStuff\\Uni\\Project6.1\\SportsAccounting2D\\BaseApplication\\BaseApplication\\bin\\Debug\\Microsoft.Extensions.Logging.Abstractions.dll\r\nC:\\MainStuff\\Uni\\Project6.1\\SportsAccounting2D\\BaseApplication\\BaseApplication\\bin\\Debug\\Microsoft.Extensions.Logging.dll\r\nC:\\MainStuff\\Uni\\Project6.1\\SportsAccounting2D\\BaseApplication\\BaseApplication\\bin\\Debug\\Microsoft.Extensions.Options.dll\r\nC:\\MainStuff\\Uni\\Project6.1\\SportsAccounting2D\\BaseApplication\\BaseApplication\\bin\\Debug\\Microsoft.Extensions.Primitives.dll\r\nC:\\MainStuff\\Uni\\Project6.1\\SportsAccounting2D\\BaseApplication\\BaseApplication\\bin\\Debug\\Microsoft.Win32.Registry.dll\r\nC:\\MainStuff\\Uni\\Project6.1\\SportsAccounting2D\\BaseApplication\\BaseApplication\\bin\\Debug\\MongoDB.Bson.dll\r\nC:\\MainStuff\\Uni\\Project6.1\\SportsAccounting2D\\BaseApplication\\BaseApplication\\bin\\Debug\\MongoDB.Driver.Core.dll\r\nC:\\MainStuff\\Uni\\Project6.1\\SportsAccounting2D\\BaseApplication\\BaseApplication\\bin\\Debug\\MongoDB.Driver.dll\r\nC:\\MainStuff\\Uni\\Project6.1\\SportsAccounting2D\\BaseApplication\\BaseApplication\\bin\\Debug\\MongoDB.Libmongocrypt.dll\r\nC:\\MainStuff\\Uni\\Project6.1\\SportsAccounting2D\\BaseApplication\\BaseApplication\\bin\\Debug\\SharpCompress.dll\r\nC:\\MainStuff\\Uni\\Project6.1\\SportsAccounting2D\\BaseApplication\\BaseApplication\\bin\\Debug\\Snappier.dll\r\nC:\\MainStuff\\Uni\\Project6.1\\SportsAccounting2D\\BaseApplication\\BaseApplication\\bin\\Debug\\System.Buffers.dll\r\nC:\\MainStuff\\Uni\\Project6.1\\SportsAccounting2D\\BaseApplication\\BaseApplication\\bin\\Debug\\System.ComponentModel.Annotations.dll\r\nC:\\MainStuff\\Uni\\Project6.1\\SportsAccounting2D\\BaseApplication\\BaseApplication\\bin\\Debug\\System.Diagnostics.DiagnosticSource.dll\r\nC:\\MainStuff\\Uni\\Project6.1\\SportsAccounting2D\\BaseApplication\\BaseApplication\\bin\\Debug\\System.Memory.dll\r\nC:\\MainStuff\\Uni\\Project6.1\\SportsAccounting2D\\BaseApplication\\BaseApplication\\bin\\Debug\\System.Numerics.Vectors.dll\r\nC:\\MainStuff\\Uni\\Project6.1\\SportsAccounting2D\\BaseApplication\\BaseApplication\\bin\\Debug\\System.Runtime.CompilerServices.Unsafe.dll\r\nC:\\MainStuff\\Uni\\Project6.1\\SportsAccounting2D\\BaseApplication\\BaseApplication\\bin\\Debug\\System.Security.AccessControl.dll\r\nC:\\MainStuff\\Uni\\Project6.1\\SportsAccounting2D\\BaseApplication\\BaseApplication\\bin\\Debug\\System.Security.Principal.Windows.dll\r\nC:\\MainStuff\\Uni\\Project6.1\\SportsAccounting2D\\BaseApplication\\BaseApplication\\bin\\Debug\\System.Text.Encoding.CodePages.dll\r\nC:\\MainStuff\\Uni\\Project6.1\\SportsAccounting2D\\BaseApplication\\BaseApplication\\bin\\Debug\\System.Threading.Tasks.Extensions.dll\r\nC:\\MainStuff\\Uni\\Project6.1\\SportsAccounting2D\\BaseApplication\\BaseApplication\\bin\\Debug\\System.ValueTuple.dll\r\nC:\\MainStuff\\Uni\\Project6.1\\SportsAccounting2D\\BaseApplication\\BaseApplication\\bin\\Debug\\ZstdSharp.dll\r\nC:\\MainStuff\\Uni\\Project6.1\\SportsAccounting2D\\BaseApplication\\BaseApplication\\bin\\Debug\\AWSSDK.Core.pdb\r\nC:\\MainStuff\\Uni\\Project6.1\\SportsAccounting2D\\BaseApplication\\BaseApplication\\bin\\Debug\\AWSSDK.Core.xml\r\nC:\\MainStuff\\Uni\\Project6.1\\SportsAccounting2D\\BaseApplication\\BaseApplication\\bin\\Debug\\AWSSDK.SecurityToken.pdb\r\nC:\\MainStuff\\Uni\\Project6.1\\SportsAccounting2D\\BaseApplication\\BaseApplication\\bin\\Debug\\AWSSDK.SecurityToken.xml\r\nC:\\MainStuff\\Uni\\Project6.1\\SportsAccounting2D\\BaseApplication\\BaseApplication\\bin\\Debug\\DnsClient.xml\r\nC:\\MainStuff\\Uni\\Project6.1\\SportsAccounting2D\\BaseApplication\\BaseApplication\\bin\\Debug\\Microsoft.AspNetCore.Cryptography.Internal.xml\r\nC:\\MainStuff\\Uni\\Project6.1\\SportsAccounting2D\\BaseApplication\\BaseApplication\\bin\\Debug\\Microsoft.AspNetCore.Cryptography.KeyDerivation.xml\r\nC:\\MainStuff\\Uni\\Project6.1\\SportsAccounting2D\\BaseApplication\\BaseApplication\\bin\\Debug\\Microsoft.Bcl.AsyncInterfaces.xml\r\nC:\\MainStuff\\Uni\\Project6.1\\SportsAccounting2D\\BaseApplication\\BaseApplication\\bin\\Debug\\Microsoft.Extensions.DependencyInjection.xml\r\nC:\\MainStuff\\Uni\\Project6.1\\SportsAccounting2D\\BaseApplication\\BaseApplication\\bin\\Debug\\Microsoft.Extensions.DependencyInjection.Abstractions.xml\r\nC:\\MainStuff\\Uni\\Project6.1\\SportsAccounting2D\\BaseApplication\\BaseApplication\\bin\\Debug\\Microsoft.Extensions.Identity.Core.xml\r\nC:\\MainStuff\\Uni\\Project6.1\\SportsAccounting2D\\BaseApplication\\BaseApplication\\bin\\Debug\\Microsoft.Extensions.Logging.xml\r\nC:\\MainStuff\\Uni\\Project6.1\\SportsAccounting2D\\BaseApplication\\BaseApplication\\bin\\Debug\\Microsoft.Extensions.Logging.Abstractions.xml\r\nC:\\MainStuff\\Uni\\Project6.1\\SportsAccounting2D\\BaseApplication\\BaseApplication\\bin\\Debug\\Microsoft.Extensions.Options.xml\r\nC:\\MainStuff\\Uni\\Project6.1\\SportsAccounting2D\\BaseApplication\\BaseApplication\\bin\\Debug\\Microsoft.Extensions.Primitives.xml\r\nC:\\MainStuff\\Uni\\Project6.1\\SportsAccounting2D\\BaseApplication\\BaseApplication\\bin\\Debug\\Microsoft.Win32.Registry.xml\r\nC:\\MainStuff\\Uni\\Project6.1\\SportsAccounting2D\\BaseApplication\\BaseApplication\\bin\\Debug\\MongoDB.Bson.xml\r\nC:\\MainStuff\\Uni\\Project6.1\\SportsAccounting2D\\BaseApplication\\BaseApplication\\bin\\Debug\\MongoDB.Driver.xml\r\nC:\\MainStuff\\Uni\\Project6.1\\SportsAccounting2D\\BaseApplication\\BaseApplication\\bin\\Debug\\MongoDB.Driver.Core.xml\r\nC:\\MainStuff\\Uni\\Project6.1\\SportsAccounting2D\\BaseApplication\\BaseApplication\\bin\\Debug\\Snappier.xml\r\nC:\\MainStuff\\Uni\\Project6.1\\SportsAccounting2D\\BaseApplication\\BaseApplication\\bin\\Debug\\System.Buffers.xml\r\nC:\\MainStuff\\Uni\\Project6.1\\SportsAccounting2D\\BaseApplication\\BaseApplication\\bin\\Debug\\System.Diagnostics.DiagnosticSource.xml\r\nC:\\MainStuff\\Uni\\Project6.1\\SportsAccounting2D\\BaseApplication\\BaseApplication\\bin\\Debug\\System.Memory.xml\r\nC:\\MainStuff\\Uni\\Project6.1\\SportsAccounting2D\\BaseApplication\\BaseApplication\\bin\\Debug\\System.Numerics.Vectors.xml\r\nC:\\MainStuff\\Uni\\Project6.1\\SportsAccounting2D\\BaseApplication\\BaseApplication\\bin\\Debug\\System.Runtime.CompilerServices.Unsafe.xml\r\nC:\\MainStuff\\Uni\\Project6.1\\SportsAccounting2D\\BaseApplication\\BaseApplication\\bin\\Debug\\System.Security.AccessControl.xml\r\nC:\\MainStuff\\Uni\\Project6.1\\SportsAccounting2D\\BaseApplication\\BaseApplication\\bin\\Debug\\System.Security.Principal.Windows.xml\r\nC:\\MainStuff\\Uni\\Project6.1\\SportsAccounting2D\\BaseApplication\\BaseApplication\\bin\\Debug\\System.Text.Encoding.CodePages.xml\r\nC:\\MainStuff\\Uni\\Project6.1\\SportsAccounting2D\\BaseApplication\\BaseApplication\\bin\\Debug\\System.Threading.Tasks.Extensions.xml\r\nC:\\MainStuff\\Uni\\Project6.1\\SportsAccounting2D\\BaseApplication\\BaseApplication\\bin\\Debug\\System.ValueTuple.xml\r\nC:\\MainStuff\\Uni\\Project6.1\\SportsAccounting2D\\BaseApplication\\BaseApplication\\obj\\Debug\\BaseApplication.csproj.CopyComplete\r\nC:\\MainStuff\\Uni\\Project6.1\\SportsAccounting2D\\BaseApplication\\BaseApplication\\bin\\Debug\\Newtonsoft.Json.dll\r\nC:\\MainStuff\\Uni\\Project6.1\\SportsAccounting2D\\BaseApplication\\BaseApplication\\bin\\Debug\\Newtonsoft.Json.xml\r\nC:\\Users\\voras\\source\\repos\\FinalAss\\SportsAccounting2D\\BaseApplication\\BaseApplication\\bin\\Debug\\mongocrypt.dll\r\nC:\\Users\\voras\\source\\repos\\FinalAss\\SportsAccounting2D\\BaseApplication\\BaseApplication\\bin\\Debug\\AWSSDK.Core.dll\r\nC:\\Users\\voras\\source\\repos\\FinalAss\\SportsAccounting2D\\BaseApplication\\BaseApplication\\bin\\Debug\\AWSSDK.SecurityToken.dll\r\nC:\\Users\\voras\\source\\repos\\FinalAss\\SportsAccounting2D\\BaseApplication\\BaseApplication\\bin\\Debug\\DnsClient.dll\r\nC:\\Users\\voras\\source\\repos\\FinalAss\\SportsAccounting2D\\BaseApplication\\BaseApplication\\bin\\Debug\\Microsoft.Win32.Registry.dll\r\nC:\\Users\\voras\\source\\repos\\FinalAss\\SportsAccounting2D\\BaseApplication\\BaseApplication\\bin\\Debug\\MongoDB.Bson.dll\r\nC:\\Users\\voras\\source\\repos\\FinalAss\\SportsAccounting2D\\BaseApplication\\BaseApplication\\bin\\Debug\\MongoDB.Driver.Core.dll\r\nC:\\Users\\voras\\source\\repos\\FinalAss\\SportsAccounting2D\\BaseApplication\\BaseApplication\\bin\\Debug\\MongoDB.Driver.dll\r\nC:\\Users\\voras\\source\\repos\\FinalAss\\SportsAccounting2D\\BaseApplication\\BaseApplication\\bin\\Debug\\MongoDB.Libmongocrypt.dll\r\nC:\\Users\\voras\\source\\repos\\FinalAss\\SportsAccounting2D\\BaseApplication\\BaseApplication\\bin\\Debug\\Newtonsoft.Json.dll\r\nC:\\Users\\voras\\source\\repos\\FinalAss\\SportsAccounting2D\\BaseApplication\\BaseApplication\\bin\\Debug\\SharpCompress.dll\r\nC:\\Users\\voras\\source\\repos\\FinalAss\\SportsAccounting2D\\BaseApplication\\BaseApplication\\bin\\Debug\\Snappier.dll\r\nC:\\Users\\voras\\source\\repos\\FinalAss\\SportsAccounting2D\\BaseApplication\\BaseApplication\\bin\\Debug\\System.Security.AccessControl.dll\r\nC:\\Users\\voras\\source\\repos\\FinalAss\\SportsAccounting2D\\BaseApplication\\BaseApplication\\bin\\Debug\\System.Security.Principal.Windows.dll\r\nC:\\Users\\voras\\source\\repos\\FinalAss\\SportsAccounting2D\\BaseApplication\\BaseApplication\\bin\\Debug\\System.Text.Encoding.CodePages.dll\r\nC:\\Users\\voras\\source\\repos\\FinalAss\\SportsAccounting2D\\BaseApplication\\BaseApplication\\bin\\Debug\\ZstdSharp.dll\r\nC:\\Users\\voras\\source\\repos\\FinalAss\\SportsAccounting2D\\BaseApplication\\BaseApplication\\bin\\Debug\\AWSSDK.Core.pdb\r\nC:\\Users\\voras\\source\\repos\\FinalAss\\SportsAccounting2D\\BaseApplication\\BaseApplication\\bin\\Debug\\AWSSDK.Core.xml\r\nC:\\Users\\voras\\source\\repos\\FinalAss\\SportsAccounting2D\\BaseApplication\\BaseApplication\\bin\\Debug\\AWSSDK.SecurityToken.pdb\r\nC:\\Users\\voras\\source\\repos\\FinalAss\\SportsAccounting2D\\BaseApplication\\BaseApplication\\bin\\Debug\\AWSSDK.SecurityToken.xml\r\nC:\\Users\\voras\\source\\repos\\FinalAss\\SportsAccounting2D\\BaseApplication\\BaseApplication\\bin\\Debug\\DnsClient.xml\r\nC:\\Users\\voras\\source\\repos\\FinalAss\\SportsAccounting2D\\BaseApplication\\BaseApplication\\bin\\Debug\\Microsoft.Win32.Registry.xml\r\nC:\\Users\\voras\\source\\repos\\FinalAss\\SportsAccounting2D\\BaseApplication\\BaseApplication\\bin\\Debug\\MongoDB.Bson.xml\r\nC:\\Users\\voras\\source\\repos\\FinalAss\\SportsAccounting2D\\BaseApplication\\BaseApplication\\bin\\Debug\\MongoDB.Driver.xml\r\nC:\\Users\\voras\\source\\repos\\FinalAss\\SportsAccounting2D\\BaseApplication\\BaseApplication\\bin\\Debug\\MongoDB.Driver.Core.xml\r\nC:\\Users\\voras\\source\\repos\\FinalAss\\SportsAccounting2D\\BaseApplication\\BaseApplication\\bin\\Debug\\Newtonsoft.Json.xml\r\nC:\\Users\\voras\\source\\repos\\FinalAss\\SportsAccounting2D\\BaseApplication\\BaseApplication\\bin\\Debug\\Snappier.xml\r\nC:\\Users\\voras\\source\\repos\\FinalAss\\SportsAccounting2D\\BaseApplication\\BaseApplication\\bin\\Debug\\System.Security.AccessControl.xml\r\nC:\\Users\\voras\\source\\repos\\FinalAss\\SportsAccounting2D\\BaseApplication\\BaseApplication\\bin\\Debug\\System.Security.Principal.Windows.xml\r\nC:\\Users\\voras\\source\\repos\\FinalAss\\SportsAccounting2D\\BaseApplication\\BaseApplication\\bin\\Debug\\System.Text.Encoding.CodePages.xml\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/../BaseApplication/BaseApplication/obj/Debug/BaseApplication.csproj.FileListAbsolute.txt b/../BaseApplication/BaseApplication/obj/Debug/BaseApplication.csproj.FileListAbsolute.txt
+--- a/../BaseApplication/BaseApplication/obj/Debug/BaseApplication.csproj.FileListAbsolute.txt	(revision 844b9e9d35bbc595f0462d1bd810090deb33a76e)
++++ b/../BaseApplication/BaseApplication/obj/Debug/BaseApplication.csproj.FileListAbsolute.txt	(date 1688154607998)
+@@ -152,3 +152,80 @@
+ C:\Users\voras\source\repos\FinalAss\SportsAccounting2D\BaseApplication\BaseApplication\bin\Debug\System.Security.AccessControl.xml
+ C:\Users\voras\source\repos\FinalAss\SportsAccounting2D\BaseApplication\BaseApplication\bin\Debug\System.Security.Principal.Windows.xml
+ C:\Users\voras\source\repos\FinalAss\SportsAccounting2D\BaseApplication\BaseApplication\bin\Debug\System.Text.Encoding.CodePages.xml
++C:\Users\Chris\Desktop\SportsAccounting\BaseApplication\BaseApplication\bin\Debug\mongocrypt.dll
++C:\Users\Chris\Desktop\SportsAccounting\BaseApplication\BaseApplication\bin\Debug\BaseApplication.exe.config
++C:\Users\Chris\Desktop\SportsAccounting\BaseApplication\BaseApplication\bin\Debug\BaseApplication.exe
++C:\Users\Chris\Desktop\SportsAccounting\BaseApplication\BaseApplication\bin\Debug\BaseApplication.pdb
++C:\Users\Chris\Desktop\SportsAccounting\BaseApplication\BaseApplication\bin\Debug\AWSSDK.Core.dll
++C:\Users\Chris\Desktop\SportsAccounting\BaseApplication\BaseApplication\bin\Debug\AWSSDK.SecurityToken.dll
++C:\Users\Chris\Desktop\SportsAccounting\BaseApplication\BaseApplication\bin\Debug\DnsClient.dll
++C:\Users\Chris\Desktop\SportsAccounting\BaseApplication\BaseApplication\bin\Debug\Microsoft.AspNetCore.Cryptography.Internal.dll
++C:\Users\Chris\Desktop\SportsAccounting\BaseApplication\BaseApplication\bin\Debug\Microsoft.AspNetCore.Cryptography.KeyDerivation.dll
++C:\Users\Chris\Desktop\SportsAccounting\BaseApplication\BaseApplication\bin\Debug\Microsoft.Bcl.AsyncInterfaces.dll
++C:\Users\Chris\Desktop\SportsAccounting\BaseApplication\BaseApplication\bin\Debug\Microsoft.Extensions.DependencyInjection.Abstractions.dll
++C:\Users\Chris\Desktop\SportsAccounting\BaseApplication\BaseApplication\bin\Debug\Microsoft.Extensions.DependencyInjection.dll
++C:\Users\Chris\Desktop\SportsAccounting\BaseApplication\BaseApplication\bin\Debug\Microsoft.Extensions.Identity.Core.dll
++C:\Users\Chris\Desktop\SportsAccounting\BaseApplication\BaseApplication\bin\Debug\Microsoft.Extensions.Logging.Abstractions.dll
++C:\Users\Chris\Desktop\SportsAccounting\BaseApplication\BaseApplication\bin\Debug\Microsoft.Extensions.Logging.dll
++C:\Users\Chris\Desktop\SportsAccounting\BaseApplication\BaseApplication\bin\Debug\Microsoft.Extensions.Options.dll
++C:\Users\Chris\Desktop\SportsAccounting\BaseApplication\BaseApplication\bin\Debug\Microsoft.Extensions.Primitives.dll
++C:\Users\Chris\Desktop\SportsAccounting\BaseApplication\BaseApplication\bin\Debug\Microsoft.Win32.Registry.dll
++C:\Users\Chris\Desktop\SportsAccounting\BaseApplication\BaseApplication\bin\Debug\MongoDB.Bson.dll
++C:\Users\Chris\Desktop\SportsAccounting\BaseApplication\BaseApplication\bin\Debug\MongoDB.Driver.Core.dll
++C:\Users\Chris\Desktop\SportsAccounting\BaseApplication\BaseApplication\bin\Debug\MongoDB.Driver.dll
++C:\Users\Chris\Desktop\SportsAccounting\BaseApplication\BaseApplication\bin\Debug\MongoDB.Libmongocrypt.dll
++C:\Users\Chris\Desktop\SportsAccounting\BaseApplication\BaseApplication\bin\Debug\Newtonsoft.Json.dll
++C:\Users\Chris\Desktop\SportsAccounting\BaseApplication\BaseApplication\bin\Debug\SharpCompress.dll
++C:\Users\Chris\Desktop\SportsAccounting\BaseApplication\BaseApplication\bin\Debug\Snappier.dll
++C:\Users\Chris\Desktop\SportsAccounting\BaseApplication\BaseApplication\bin\Debug\System.Buffers.dll
++C:\Users\Chris\Desktop\SportsAccounting\BaseApplication\BaseApplication\bin\Debug\System.ComponentModel.Annotations.dll
++C:\Users\Chris\Desktop\SportsAccounting\BaseApplication\BaseApplication\bin\Debug\System.Diagnostics.DiagnosticSource.dll
++C:\Users\Chris\Desktop\SportsAccounting\BaseApplication\BaseApplication\bin\Debug\System.Memory.dll
++C:\Users\Chris\Desktop\SportsAccounting\BaseApplication\BaseApplication\bin\Debug\System.Numerics.Vectors.dll
++C:\Users\Chris\Desktop\SportsAccounting\BaseApplication\BaseApplication\bin\Debug\System.Runtime.CompilerServices.Unsafe.dll
++C:\Users\Chris\Desktop\SportsAccounting\BaseApplication\BaseApplication\bin\Debug\System.Security.AccessControl.dll
++C:\Users\Chris\Desktop\SportsAccounting\BaseApplication\BaseApplication\bin\Debug\System.Security.Principal.Windows.dll
++C:\Users\Chris\Desktop\SportsAccounting\BaseApplication\BaseApplication\bin\Debug\System.Text.Encoding.CodePages.dll
++C:\Users\Chris\Desktop\SportsAccounting\BaseApplication\BaseApplication\bin\Debug\System.Threading.Tasks.Extensions.dll
++C:\Users\Chris\Desktop\SportsAccounting\BaseApplication\BaseApplication\bin\Debug\System.ValueTuple.dll
++C:\Users\Chris\Desktop\SportsAccounting\BaseApplication\BaseApplication\bin\Debug\ZstdSharp.dll
++C:\Users\Chris\Desktop\SportsAccounting\BaseApplication\BaseApplication\bin\Debug\AWSSDK.Core.pdb
++C:\Users\Chris\Desktop\SportsAccounting\BaseApplication\BaseApplication\bin\Debug\AWSSDK.Core.xml
++C:\Users\Chris\Desktop\SportsAccounting\BaseApplication\BaseApplication\bin\Debug\AWSSDK.SecurityToken.pdb
++C:\Users\Chris\Desktop\SportsAccounting\BaseApplication\BaseApplication\bin\Debug\AWSSDK.SecurityToken.xml
++C:\Users\Chris\Desktop\SportsAccounting\BaseApplication\BaseApplication\bin\Debug\DnsClient.xml
++C:\Users\Chris\Desktop\SportsAccounting\BaseApplication\BaseApplication\bin\Debug\Microsoft.AspNetCore.Cryptography.Internal.xml
++C:\Users\Chris\Desktop\SportsAccounting\BaseApplication\BaseApplication\bin\Debug\Microsoft.AspNetCore.Cryptography.KeyDerivation.xml
++C:\Users\Chris\Desktop\SportsAccounting\BaseApplication\BaseApplication\bin\Debug\Microsoft.Bcl.AsyncInterfaces.xml
++C:\Users\Chris\Desktop\SportsAccounting\BaseApplication\BaseApplication\bin\Debug\Microsoft.Extensions.DependencyInjection.xml
++C:\Users\Chris\Desktop\SportsAccounting\BaseApplication\BaseApplication\bin\Debug\Microsoft.Extensions.DependencyInjection.Abstractions.xml
++C:\Users\Chris\Desktop\SportsAccounting\BaseApplication\BaseApplication\bin\Debug\Microsoft.Extensions.Identity.Core.xml
++C:\Users\Chris\Desktop\SportsAccounting\BaseApplication\BaseApplication\bin\Debug\Microsoft.Extensions.Logging.xml
++C:\Users\Chris\Desktop\SportsAccounting\BaseApplication\BaseApplication\bin\Debug\Microsoft.Extensions.Logging.Abstractions.xml
++C:\Users\Chris\Desktop\SportsAccounting\BaseApplication\BaseApplication\bin\Debug\Microsoft.Extensions.Options.xml
++C:\Users\Chris\Desktop\SportsAccounting\BaseApplication\BaseApplication\bin\Debug\Microsoft.Extensions.Primitives.xml
++C:\Users\Chris\Desktop\SportsAccounting\BaseApplication\BaseApplication\bin\Debug\Microsoft.Win32.Registry.xml
++C:\Users\Chris\Desktop\SportsAccounting\BaseApplication\BaseApplication\bin\Debug\MongoDB.Bson.xml
++C:\Users\Chris\Desktop\SportsAccounting\BaseApplication\BaseApplication\bin\Debug\MongoDB.Driver.xml
++C:\Users\Chris\Desktop\SportsAccounting\BaseApplication\BaseApplication\bin\Debug\MongoDB.Driver.Core.xml
++C:\Users\Chris\Desktop\SportsAccounting\BaseApplication\BaseApplication\bin\Debug\Newtonsoft.Json.xml
++C:\Users\Chris\Desktop\SportsAccounting\BaseApplication\BaseApplication\bin\Debug\Snappier.xml
++C:\Users\Chris\Desktop\SportsAccounting\BaseApplication\BaseApplication\bin\Debug\System.Buffers.xml
++C:\Users\Chris\Desktop\SportsAccounting\BaseApplication\BaseApplication\bin\Debug\System.Diagnostics.DiagnosticSource.xml
++C:\Users\Chris\Desktop\SportsAccounting\BaseApplication\BaseApplication\bin\Debug\System.Memory.xml
++C:\Users\Chris\Desktop\SportsAccounting\BaseApplication\BaseApplication\bin\Debug\System.Numerics.Vectors.xml
++C:\Users\Chris\Desktop\SportsAccounting\BaseApplication\BaseApplication\bin\Debug\System.Runtime.CompilerServices.Unsafe.xml
++C:\Users\Chris\Desktop\SportsAccounting\BaseApplication\BaseApplication\bin\Debug\System.Security.AccessControl.xml
++C:\Users\Chris\Desktop\SportsAccounting\BaseApplication\BaseApplication\bin\Debug\System.Security.Principal.Windows.xml
++C:\Users\Chris\Desktop\SportsAccounting\BaseApplication\BaseApplication\bin\Debug\System.Text.Encoding.CodePages.xml
++C:\Users\Chris\Desktop\SportsAccounting\BaseApplication\BaseApplication\bin\Debug\System.Threading.Tasks.Extensions.xml
++C:\Users\Chris\Desktop\SportsAccounting\BaseApplication\BaseApplication\bin\Debug\System.ValueTuple.xml
++C:\Users\Chris\Desktop\SportsAccounting\BaseApplication\BaseApplication\obj\Debug\BaseApplication.csproj.AssemblyReference.cache
++C:\Users\Chris\Desktop\SportsAccounting\BaseApplication\BaseApplication\obj\Debug\BaseApplication.csproj.SuggestedBindingRedirects.cache
++C:\Users\Chris\Desktop\SportsAccounting\BaseApplication\BaseApplication\obj\Debug\BaseApplication.Form1.resources
++C:\Users\Chris\Desktop\SportsAccounting\BaseApplication\BaseApplication\obj\Debug\BaseApplication.Properties.Resources.resources
++C:\Users\Chris\Desktop\SportsAccounting\BaseApplication\BaseApplication\obj\Debug\BaseApplication.csproj.GenerateResource.cache
++C:\Users\Chris\Desktop\SportsAccounting\BaseApplication\BaseApplication\obj\Debug\BaseApplication.csproj.CoreCompileInputs.cache
++C:\Users\Chris\Desktop\SportsAccounting\BaseApplication\BaseApplication\obj\Debug\BaseApplication.csproj.CopyComplete
++C:\Users\Chris\Desktop\SportsAccounting\BaseApplication\BaseApplication\obj\Debug\BaseApplication.exe
++C:\Users\Chris\Desktop\SportsAccounting\BaseApplication\BaseApplication\obj\Debug\BaseApplication.pdb
+Index: validation/XML/XSDSchemav3.xsd
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/validation/XML/XSDSchemav3.xsd b/validation/XML/XSDSchemav3.xsd
+new file mode 100644
+--- /dev/null	(date 1688242289315)
++++ b/validation/XML/XSDSchemav3.xsd	(date 1688242289315)
+@@ -0,0 +1,101 @@
++<xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema">
++    <xs:element name="root">
++        <xs:complexType>
++            <xs:sequence>
++                <xs:element type="xs:string" name="account_identification"/>
++                <xs:element name="available_balance">
++                    <xs:complexType>
++                        <xs:sequence>
++                            <xs:element name="amount">
++                                <xs:complexType>
++                                    <xs:sequence>
++                                        <xs:element type="xs:float" name="amount"/>
++                                        <xs:element type="xs:string" name="currency"/>
++                                    </xs:sequence>
++                                </xs:complexType>
++                            </xs:element>
++                            <xs:element type="xs:date" name="date"/>
++                            <xs:element type="xs:string" name="status"/>
++                        </xs:sequence>
++                    </xs:complexType>
++                </xs:element>
++                <xs:element name="final_closing_balance">
++                    <xs:complexType>
++                        <xs:sequence>
++                            <xs:element name="amount">
++                                <xs:complexType>
++                                    <xs:sequence>
++                                        <xs:element type="xs:float" name="amount"/>
++                                        <xs:element type="xs:string" name="currency"/>
++                                    </xs:sequence>
++                                </xs:complexType>
++                            </xs:element>
++                            <xs:element type="xs:date" name="date"/>
++                            <xs:element type="xs:string" name="status"/>
++                        </xs:sequence>
++                    </xs:complexType>
++                </xs:element>
++                <xs:element name="final_opening_balance">
++                    <xs:complexType>
++                        <xs:sequence>
++                            <xs:element name="amount">
++                                <xs:complexType>
++                                    <xs:sequence>
++                                        <xs:element type="xs:float" name="amount"/>
++                                        <xs:element type="xs:string" name="currency"/>
++                                    </xs:sequence>
++                                </xs:complexType>
++                            </xs:element>
++                            <xs:element type="xs:date" name="date"/>
++                            <xs:element type="xs:string" name="status"/>
++                        </xs:sequence>
++                    </xs:complexType>
++                </xs:element>
++                <xs:element name="forward_available_balance">
++                    <xs:complexType>
++                        <xs:sequence>
++                            <xs:element name="amount">
++                                <xs:complexType>
++                                    <xs:sequence>
++                                        <xs:element type="xs:float" name="amount"/>
++                                        <xs:element type="xs:string" name="currency"/>
++                                    </xs:sequence>
++                                </xs:complexType>
++                            </xs:element>
++                            <xs:element type="xs:date" name="date"/>
++                            <xs:element type="xs:string" name="status"/>
++                        </xs:sequence>
++                    </xs:complexType>
++                </xs:element>
++                <xs:element type="xs:string" name="sequence_number"/>
++                <xs:element type="xs:byte" name="statement_number"/>
++                <xs:element type="xs:string" name="transaction_reference"/>
++                <xs:element name="transactions" maxOccurs="unbounded" minOccurs="0">
++                    <xs:complexType>
++                        <xs:sequence>
++                            <xs:element name="amount">
++                                <xs:complexType>
++                                    <xs:sequence>
++                                        <xs:element type="xs:float" name="amount"/>
++                                        <xs:element type="xs:string" name="currency"/>
++                                    </xs:sequence>
++                                </xs:complexType>
++                            </xs:element>
++                            <xs:element type="xs:short" name="bank_reference"/>
++                            <xs:element type="xs:string" name="currency"/>
++                            <xs:element type="xs:string" name="customer_reference"/>
++                            <xs:element type="xs:date" name="date"/>
++                            <xs:element type="xs:date" name="entry_date"/>
++                            <xs:element type="xs:string" name="extra_details"/>
++                            <xs:element type="xs:string" name="funds_code"/>
++                            <xs:element type="xs:date" name="guessed_entry_date"/>
++                            <xs:element type="xs:string" name="id"/>
++                            <xs:element type="xs:string" name="status"/>
++                            <xs:element type="xs:string" name="transaction_details"/>
++                        </xs:sequence>
++                    </xs:complexType>
++                </xs:element>
++            </xs:sequence>
++        </xs:complexType>
++    </xs:element>
++</xs:schema>
+\ No newline at end of file
+Index: validation/whatever.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/validation/whatever.xml b/validation/whatever.xml
+new file mode 100644
+--- /dev/null	(date 1688240524981)
++++ b/validation/whatever.xml	(date 1688240524981)
+@@ -0,0 +1,186 @@
++<?xml version="1.0" encoding="UTF-8" ?>
++<root>
++    <account_identification>NL69INGB0123456789EUR</account_identification>
++    <available_balance>
++        <amount>
++            <amount>564.35</amount>
++            <currency>EUR</currency>
++        </amount>
++        <date>2014-02-20</date>
++        <status>C</status>
++    </available_balance>
++    <final_closing_balance>
++        <amount>
++            <amount>564.35</amount>
++            <currency>EUR</currency>
++        </amount>
++        <date>2014-02-20</date>
++        <status>C</status>
++    </final_closing_balance>
++    <final_opening_balance>
++        <amount>
++            <amount>662.23</amount>
++            <currency>EUR</currency>
++        </amount>
++        <date>2014-02-19</date>
++        <status>C</status>
++    </final_opening_balance>
++    <forward_available_balance>
++        <amount>
++            <amount>564.35</amount>
++            <currency>EUR</currency>
++        </amount>
++        <date>2014-02-24</date>
++        <status>C</status>
++    </forward_available_balance>
++    <sequence_number/>
++    <statement_number>00000</statement_number>
++    <transaction_reference>P140220000000001</transaction_reference>
++    <transactions>
++        <amount>
++            <amount>1.56</amount>
++            <currency>EUR</currency>
++        </amount>
++        <bank_reference>00000000001005</bank_reference>
++        <currency>EUR</currency>
++        <customer_reference>EREF</customer_reference>
++        <date>2014-02-20</date>
++        <entry_date>2014-02-20</entry_date>
++        <extra_details>/TRCD/00100/</extra_details>
++        <funds_code/>
++        <guessed_entry_date>2014-02-20</guessed_entry_date>
++        <id>NTRF</id>
++        <status>C</status>
++        <transaction_details>/EREF/EV12341REP1231456T1234//CNTP/NL32INGB0000012345/INGBNL2
++            A/ING BANK NV INZAKE WEB///REMI/USTD//EV10001REP1000000T1000/</transaction_details>
++    </transactions>
++    <transactions>
++        <amount>
++            <amount>-1.57</amount>
++            <currency>EUR</currency>
++        </amount>
++        <bank_reference>00000000001006</bank_reference>
++        <currency>EUR</currency>
++        <customer_reference>PREF</customer_reference>
++        <date>2014-02-20</date>
++        <entry_date>2014-02-20</entry_date>
++        <extra_details>/TRCD/00200/</extra_details>
++        <funds_code/>
++        <guessed_entry_date>2014-02-20</guessed_entry_date>
++        <id>NTRF</id>
++        <status>D</status>
++        <transaction_details>/PREF/M000000003333333//REMI/USTD//TOTAAL 1 VZ/</transaction_details>
++    </transactions>
++    <transactions>
++        <amount>
++            <amount>1.57</amount>
++            <currency>EUR</currency>
++        </amount>
++        <bank_reference>00000000001007</bank_reference>
++        <currency>EUR</currency>
++        <customer_reference>EREF</customer_reference>
++        <date>2014-02-20</date>
++        <entry_date>2014-02-20</entry_date>
++        <extra_details>/TRCD/00190/</extra_details>
++        <funds_code/>
++        <guessed_entry_date>2014-02-20</guessed_entry_date>
++        <id>NRTI</id>
++        <status>C</status>
++        <transaction_details>/RTRN/MS03//EREF/20120123456789//CNTP/NL32INGB0000012345/INGB
++            NL2A/J.Janssen///REMI/USTD//Factuurnr 123456 Klantnr 00123/</transaction_details>
++    </transactions>
++    <transactions>
++        <amount>
++            <amount>-1.14</amount>
++            <currency>EUR</currency>
++        </amount>
++        <bank_reference>00000000001009</bank_reference>
++        <currency>EUR</currency>
++        <customer_reference>EREF</customer_reference>
++        <date>2014-02-20</date>
++        <entry_date>2014-02-20</entry_date>
++        <extra_details>/TRCD/01016/</extra_details>
++        <funds_code/>
++        <guessed_entry_date>2014-02-20</guessed_entry_date>
++        <id>NDDT</id>
++        <status>D</status>
++        <transaction_details>/EREF/EV123REP123412T1234//MARF/MND-EV01//CSID/NL32ZZZ9999999
++            91234//CNTP/NL32INGB0000012345/INGBNL2A/ING Bank N.V. inzake WeB/
++            //REMI/USTD//EV123REP123412T1234/</transaction_details>
++    </transactions>
++    <transactions>
++        <amount>
++            <amount>1.45</amount>
++            <currency>EUR</currency>
++        </amount>
++        <bank_reference>00000000001008</bank_reference>
++        <currency>EUR</currency>
++        <customer_reference>PREF</customer_reference>
++        <date>2014-02-20</date>
++        <entry_date>2014-02-20</entry_date>
++        <extra_details>/TRCD/01000/</extra_details>
++        <funds_code/>
++        <guessed_entry_date>2014-02-20</guessed_entry_date>
++        <id>NDDT</id>
++        <status>C</status>
++        <transaction_details>/PREF/M000000001111111//CSID/NL32ZZZ999999991234//REMI/USTD//
++            TOTAAL       1 POSTEN/</transaction_details>
++    </transactions>
++    <transactions>
++        <amount>
++            <amount>-12.75</amount>
++            <currency>EUR</currency>
++        </amount>
++        <bank_reference>00000000001010</bank_reference>
++        <currency>EUR</currency>
++        <customer_reference>EREF</customer_reference>
++        <date>2014-02-20</date>
++        <entry_date>2014-02-20</entry_date>
++        <extra_details>/TRCD/01315/</extra_details>
++        <funds_code/>
++        <guessed_entry_date>2014-02-20</guessed_entry_date>
++        <id>NRTI</id>
++        <status>D</status>
++        <transaction_details>/RTRN/MS03//EREF/20120501P0123478//MARF/MND-120123//CSID/NL32
++            ZZZ999999991234//CNTP/NL32INGB0000012345/INGBNL2A/J.Janssen///REM
++            I/USTD//CONTRIBUTIE FEB 2014/</transaction_details>
++    </transactions>
++    <transactions>
++        <amount>
++            <amount>32.00</amount>
++            <currency>EUR</currency>
++        </amount>
++        <bank_reference>00000000001011</bank_reference>
++        <currency>EUR</currency>
++        <customer_reference>9001123412341234</customer_reference>
++        <date>2014-02-20</date>
++        <entry_date>2014-02-20</entry_date>
++        <extra_details>/TRCD/00108/</extra_details>
++        <funds_code/>
++        <guessed_entry_date>2014-02-20</guessed_entry_date>
++        <id>NTRF</id>
++        <status>C</status>
++        <transaction_details>/EREF/15814016000676480//CNTP/NL32INGB0000012345/INGBNL2A/J.J
++            anssen///REMI/STRD/CUR/9001123412341234/</transaction_details>
++    </transactions>
++    <transactions>
++        <amount>
++            <amount>-119.00</amount>
++            <currency>EUR</currency>
++        </amount>
++        <bank_reference>00000000001012</bank_reference>
++        <currency>EUR</currency>
++        <customer_reference>1070123412341234</customer_reference>
++        <date>2014-02-20</date>
++        <entry_date>2014-02-20</entry_date>
++        <extra_details>/TRCD/00108/</extra_details>
++        <funds_code/>
++        <guessed_entry_date>2014-02-20</guessed_entry_date>
++        <id>NTRF</id>
++        <status>D</status>
++        <transaction_details>/EREF/15614016000384600//CNTP/NL32INGB0000012345/INGBNL2A/ING
++            BANK NV///REMI/STRD/CUR/1070123412341234/
++            /SUM/4/4/134,46/36,58/
++            -}</transaction_details>
++    </transactions>
++</root>
+\ No newline at end of file

@@ -1,0 +1,44 @@
+<changelist name="Uncommitted_changes_before_Update_at_02_07_2023_22_52_[Changes]" date="1688331153493" recycled="false" toDelete="true">
+  <option name="PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_02_07_2023_22_52_[Changes]/shelved.patch" />
+  <option name="DESCRIPTION" value="Uncommitted changes before Update at 02/07/2023 22:52 [Changes]" />
+  <binary>
+    <option name="BEFORE_PATH" value="../BaseApplication/BaseApplication/obj/Debug/BaseApplication.exe" />
+    <option name="AFTER_PATH" value="../BaseApplication/BaseApplication/obj/Debug/BaseApplication.exe" />
+    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_02_07_2023_22_52_[Changes]/BaseApplication.exe" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="../BaseApplication/.vs/BaseApplication/v17/.suo" />
+    <option name="AFTER_PATH" value="../BaseApplication/.vs/BaseApplication/v17/.suo" />
+    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_02_07_2023_22_52_[Changes]/.suo" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="../BaseApplication/BaseApplication/obj/Debug/BaseApplication.csproj.GenerateResource.cache" />
+    <option name="AFTER_PATH" value="../BaseApplication/BaseApplication/obj/Debug/BaseApplication.csproj.GenerateResource.cache" />
+    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_02_07_2023_22_52_[Changes]/BaseApplication.csproj.GenerateResource.cache" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="../BaseApplication/BaseApplication/obj/Debug/BaseApplication.pdb" />
+    <option name="AFTER_PATH" value="../BaseApplication/BaseApplication/obj/Debug/BaseApplication.pdb" />
+    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_02_07_2023_22_52_[Changes]/BaseApplication.pdb" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="../BaseApplication/BaseApplication/obj/Debug/BaseApplication.csproj.AssemblyReference.cache" />
+    <option name="AFTER_PATH" value="../BaseApplication/BaseApplication/obj/Debug/BaseApplication.csproj.AssemblyReference.cache" />
+    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_02_07_2023_22_52_[Changes]/BaseApplication.csproj.AssemblyReference.cache" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="../BaseApplication/BaseApplication/bin/Debug/BaseApplication.exe" />
+    <option name="AFTER_PATH" value="../BaseApplication/BaseApplication/bin/Debug/BaseApplication.exe" />
+    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_02_07_2023_22_52_[Changes]/BaseApplication1.exe" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="../BaseApplication/BaseApplication/bin/Debug/BaseApplication.pdb" />
+    <option name="AFTER_PATH" value="../BaseApplication/BaseApplication/bin/Debug/BaseApplication.pdb" />
+    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_02_07_2023_22_52_[Changes]/BaseApplication1.pdb" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="../BaseApplication/.vs/BaseApplication/FileContentIndex/f38b83c5-2315-4caa-9c1e-556864466fcc.vsidx" />
+    <option name="AFTER_PATH" />
+    <option name="SHELVED_PATH" />
+  </binary>
+</changelist>
