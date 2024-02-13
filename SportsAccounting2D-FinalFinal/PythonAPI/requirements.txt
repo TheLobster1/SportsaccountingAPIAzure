@@ -1,8 +1,0 @@
-dicttoxml2
-xmltodict
-jsonschema
-lxml
-mt-940
-mysql-connector-python
-Flask
-pymongo
