@@ -11,14 +11,15 @@ from pymongo import MongoClient
 
 from connectionString import connection_string
 from validation.Validator import *
+from databaseValues import *
 
 # MySql connection
 mydb = mysql.connector.connect(
-    host='localhost',
-    port=3306,
-    user="root",
-    password="",
-    database="sportsaccounting",
+    host=DATABASE_HOST,
+    port=DATABASE_PORT,
+    user=DATABASE_USER,
+    password=DATABASE_PASSWORD,
+    database=DATABASE_NAME,
     use_pure=True
 )
 
