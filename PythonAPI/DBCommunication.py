@@ -62,14 +62,15 @@ def save_file_to_database():
     file = request.files['file']
     if file.filename != '':
         file = parse_mt940_file(file)
+        collection.insert_one(file)
+        most_recent_entry = next(collection.find(sort=[("_id", -1)], limit=1), None)
         if json_schema_validate(file, json_file_path_upload) is False:
             return generate_response("Unsupported file format")
-        if is_duplicate(file):
+        if is_duplicate(most_recent_entry):
             return generate_response("Duplicate file")
-        balances = list(key for key in file if "balance" in key)
-        insert_file_info(file, collect_detailed_ids(file, balances))
-        insert_transaction_info(file)
-        collection.insert_one(file)
+        balances = list(key for key in most_recent_entry if "balance" in key)
+        insert_file_info(most_recent_entry, collect_detailed_ids(most_recent_entry, balances))
+        insert_transaction_info(most_recent_entry)
     return generate_response("File uploaded")
 
 
