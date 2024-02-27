@@ -5,9 +5,11 @@ from xml.dom.minidom import parseString
 import dicttoxml2
 import mt940
 import mysql.connector
+import pymongo
 import xmltodict
 from flask import Flask, request, jsonify, make_response
 from pymongo import MongoClient
+from bson.objectid import ObjectId
 
 from connectionString import connection_string
 from validation.Validator import *
@@ -57,20 +59,18 @@ def perform_backup():
     return generate_response("Backup performed")
 
 
-@app.route('/api/uploadFile', methods=["POST"])
+# Listens for a GET request with an entry_id parameter
+@app.route('/api/uploadFile', methods=["GET"])
 def save_file_to_database():
-    file = request.files['file']
-    if file.filename != '':
-        file = parse_mt940_file(file)
-        collection.insert_one(file)
-        most_recent_entry = next(collection.find(sort=[("_id", -1)], limit=1), None)
-        if json_schema_validate(file, json_file_path_upload) is False:
-            return generate_response("Unsupported file format")
-        if is_duplicate(most_recent_entry):
-            return generate_response("Duplicate file")
-        balances = list(key for key in most_recent_entry if "balance" in key)
-        insert_file_info(most_recent_entry, collect_detailed_ids(most_recent_entry, balances))
-        insert_transaction_info(most_recent_entry)
+    entry_id = request.args.get('entry_id')
+    entry_id_object = ObjectId(entry_id) # Convert the entry ID to an ObjectId to match
+    # Get the latest MT940 file from MongoDB based on Id received from Parser
+    file = collection.find_one({"_id": entry_id_object})
+    if json_schema_validate(file, json_file_path_upload) is False:
+        return generate_response("Unsupported file format", "application/json", 400)
+    balances = list(key for key in file if "balance" in key)
+    insert_file_info(file, collect_detailed_ids(file, balances))
+    insert_transaction_info(file)
     return generate_response("File uploaded")
 
 
