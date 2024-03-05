@@ -276,12 +276,23 @@ def get_columns(table):
 
 @app.route('/api/searchKeyword', methods=["GET"])
 def search_keyword():
-    table = request.args.get('table')
-    column = request.args.get('column')
     keyword = request.args.get('keyword')
-    mycursor.execute("SELECT * FROM %s WHERE %s LIKE '%%%s%%'" % (table, column, keyword))
-    myresult = mycursor.fetchall()
-    return myresult
+    mycursor.execute("SHOW TABLES")
+    tables = mycursor.fetchall()
+
+    for table in tables:
+        table_name = table[0]
+
+        mycursor.execute(f"DESCRIBE {table_name}")
+        columns = [column[0] for column in mycursor.fetchall()]
+
+        for column in columns:
+            query = f"SELECT * FROM {table_name} WHERE {column} LIKE %s"
+            mycursor.execute(query, ('%' + keyword + '%',))
+            results = mycursor.fetchall()
+
+            for result in results:
+                return f"'{table_name}','{column}', {result}"
 
 
 @app.route('/api/ModulesSummary', methods=["GET"])
