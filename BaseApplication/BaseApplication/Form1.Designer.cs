@@ -35,6 +35,7 @@ namespace BaseApplication
             System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
             this.navigation = new System.Windows.Forms.TabControl();
             this.mainPage = new System.Windows.Forms.TabPage();
+            this.LogoutBtn = new System.Windows.Forms.Button();
             this.responseTypeBox = new System.Windows.Forms.GroupBox();
             this.xmlResponseSlct = new System.Windows.Forms.RadioButton();
             this.jsonResponseSlct = new System.Windows.Forms.RadioButton();
@@ -111,7 +112,6 @@ namespace BaseApplication
             this.chart1 = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             this.backgroundWorker2 = new System.ComponentModel.BackgroundWorker();
-            this.LogoutBtn = new System.Windows.Forms.Button();
             this.navigation.SuspendLayout();
             this.mainPage.SuspendLayout();
             this.responseTypeBox.SuspendLayout();
@@ -162,6 +162,16 @@ namespace BaseApplication
             this.mainPage.TabIndex = 0;
             this.mainPage.Text = "Main";
             this.mainPage.UseVisualStyleBackColor = true;
+            // 
+            // LogoutBtn
+            // 
+            this.LogoutBtn.Location = new System.Drawing.Point(603, 341);
+            this.LogoutBtn.Name = "LogoutBtn";
+            this.LogoutBtn.Size = new System.Drawing.Size(99, 45);
+            this.LogoutBtn.TabIndex = 22;
+            this.LogoutBtn.Text = "Logout";
+            this.LogoutBtn.UseVisualStyleBackColor = true;
+            this.LogoutBtn.Click += new System.EventHandler(this.LogoutBtn_Click);
             // 
             // responseTypeBox
             // 
@@ -264,7 +274,7 @@ namespace BaseApplication
             this.addFileBtn.Name = "addFileBtn";
             this.addFileBtn.Size = new System.Drawing.Size(156, 46);
             this.addFileBtn.TabIndex = 14;
-            this.addFileBtn.Text = "Add file";
+            this.addFileBtn.Text = "Update";
             this.addFileBtn.UseVisualStyleBackColor = true;
             this.addFileBtn.Click += new System.EventHandler(this.addFileBtn_Click);
             // 
@@ -897,16 +907,6 @@ namespace BaseApplication
             this.chart1.Size = new System.Drawing.Size(785, 414);
             this.chart1.TabIndex = 0;
             this.chart1.Text = "chart1";
-            // 
-            // LogoutBtn
-            // 
-            this.LogoutBtn.Location = new System.Drawing.Point(603, 341);
-            this.LogoutBtn.Name = "LogoutBtn";
-            this.LogoutBtn.Size = new System.Drawing.Size(99, 45);
-            this.LogoutBtn.TabIndex = 22;
-            this.LogoutBtn.Text = "Logout";
-            this.LogoutBtn.UseVisualStyleBackColor = true;
-            this.LogoutBtn.Click += new System.EventHandler(this.LogoutBtn_Click);
             // 
             // Form1
             // 

@@ -192,7 +192,7 @@ namespace BaseApplication
         {
             if (ValidateRegister())
             {
-                var dateOfJoin = DateTime.Now.ToShortDateString();
+                var dateOfJoin = DateTime.Now.ToString("yyyy/MM/dd");
                 NameValueCollection userInfo = new()
       
                 {
@@ -304,41 +304,42 @@ namespace BaseApplication
             return SplitResponse(response);
         }
 
-        private async void addFileBtn_Click(object sender, EventArgs e)
+        private void addFileBtn_Click(object sender, EventArgs e)
         {
-            OpenFileDialog openFileDialog1 = new()
-            {
-                Title = "Select MT940 Files",
-                Multiselect = true
-            };
+            UpdateBalance();
+            //OpenFileDialog openFileDialog1 = new()
+            //{
+            //    Title = "Select MT940 Files",
+            //    Multiselect = true
+            //};
 
-            DialogResult result = openFileDialog1.ShowDialog();
-            if (result == DialogResult.OK)
-            {
-                string response = "";
-                foreach (String fileName in openFileDialog1.FileNames)
-                {
-                    response += UploadToAPI(fileName) + " ";
-                }
-                if (!response.Contains("Unsupported file format") && !response.Contains("Duplicate file"))
-                {
-                    MessageBox.Show("File(s) uploaded. Please give each transaction a category");
-                    navigation.TabPages.Add(editTransaction);
-                    navigation.SelectTab(editTransaction);
-                    EditTabs(true);
-                    await GetTransactionAsync();
-                    UpdateBalance();
-                }
-                else if(response.Contains("Duplicate file"))
-                {
-                    MessageBox.Show("Duplicate file");
-                }
-                else
-                {
-                    MessageBox.Show("Unsupported file format");
-                }
-                
-            }
+            //DialogResult result = openFileDialog1.ShowDialog();
+            //if (result == DialogResult.OK)
+            //{
+            //    string response = "";
+            //    foreach (String fileName in openFileDialog1.FileNames)
+            //    {
+            //        response += UploadToAPI(fileName) + " ";
+            //    }
+            //    if (!response.Contains("Unsupported file format") && !response.Contains("Duplicate file"))
+            //    {
+            //        MessageBox.Show("File(s) uploaded. Please give each transaction a category");
+            //        navigation.TabPages.Add(editTransaction);
+            //        navigation.SelectTab(editTransaction);
+            //        EditTabs(true);
+            //        await GetTransactionAsync();
+            //        UpdateBalance();
+            //    }
+            //    else if(response.Contains("Duplicate file"))
+            //    {
+            //        MessageBox.Show("Duplicate file");
+            //    }
+            //    else
+            //    {
+            //        MessageBox.Show("Unsupported file format");
+            //    }
+
+            //}
         }
 
         private void EditTabs(bool hide)
@@ -456,7 +457,7 @@ namespace BaseApplication
             {
                 table = match.Groups[1].Value;
                 string column = match.Groups[2].Value;
-                response = "[[" + match.Groups[3].Value.Replace("'", "\"").Replace(" None","null") + "]]";
+                response = "[[" + match.Groups[3].Value.Replace("'", "\"").Replace(" None","null") + ")]]";
             }
             Console.WriteLine(response);
             string[][] parsedResponse = ParseStringToArray(response);
@@ -528,6 +529,24 @@ namespace BaseApplication
 
         static string[][] ParseStringToArray(string input)
         {
+            //string pattern = @"\d{4}-\d{2}-\d{2}";
+            //Match match = Regex.Match(input, pattern);
+            //if (match.Success)
+            //{
+            //    string dateString = match.Value;
+            //    // Parse the date string into a DateTime object
+            //    string formattedDate = DateTime.ParseExact(dateString, "yyyy-MM-dd", CultureInfo.InvariantCulture)
+            //        .ToString("yyyyMMdd"); // Or any other format you prefer
+            //    int startIndex = input.IndexOf("datetime.date(") + 16;
+            //    int endIndex = input.IndexOf(")");
+
+            //    if (startIndex > 0 && endIndex > startIndex)
+            //    {
+            //        // Create a new string with the formatted date inserted
+            //        input = input.Substring(0, startIndex) + formattedDate + input.Substring(endIndex);
+            //    }
+            //}
+
             JArray jsonArray = JsonConvert.DeserializeObject<JArray>(input);
             string[][] array = new string[jsonArray.Count][];
 

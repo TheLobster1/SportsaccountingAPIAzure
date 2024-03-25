@@ -74,17 +74,21 @@ def save_file_to_database():
     return generate_response("File uploaded")
 
 
-@app.route('/api/getTransactions/<request_type>', methods=["GET"])
+@app.route('/api/transaction/<request_type>', methods=["GET"])
 def retrieve_transactions(request_type):
     if request_type == "other":
         mycursor.execute("SELECT `bankReference` FROM transaction WHERE `categoryName` = 'other'")
     elif request_type == "all":
         mycursor.execute("SELECT `bankReference` FROM transaction")
+    elif request_type == "chart":
+        mycursor.execute("SELECT amount, `date` FROM detailedinfo WHERE type = 'transaction'")
+    else:
+        return generate_response("Unsupported request type", "application/json", 400)
     myresult = mycursor.fetchall()
     return myresult
 
 
-@app.route('/api/updateTransactionDescription', methods=["GET"])
+@app.route('/api/transactionDescription', methods=["PUT"])
 def update_transaction_description():
     custom_details = request.args.get('customDetails')
     bank_reference = request.args.get('bankReference')
@@ -96,7 +100,7 @@ def update_transaction_description():
     return generate_response("Transaction description updated")
 
 
-@app.route('/api/getTransactionDescription/<bank_ref>', methods=["GET"])
+@app.route('/api/transactionDescription/<bank_ref>', methods=["GET"])
 def get_transaction_description(bank_ref):
     mycursor.callproc('SowCustomDetailsBasedOnBankReference', [bank_ref])
     for result in mycursor.stored_results():
@@ -107,7 +111,7 @@ def get_transaction_description(bank_ref):
 @app.route('/api/getBalance', methods=["GET"])
 def get_balance():
     mycursor.execute(
-        "SELECT amount FROM detailedinfo WHERE Id = (SELECT availableBalanceId FROM file ORDER BY id DESC LIMIT 1)")
+        "SELECT amount FROM detailedinfo WHERE Id = (SELECT availableBalanceId FROM file ORDER BY availableBalanceId DESC LIMIT 1)")
     myresult = mycursor.fetchall()
     print(myresult)
     if len(myresult) == 0:
@@ -115,18 +119,8 @@ def get_balance():
     return myresult
 
 
-@app.route('/api/getTransactionsForChart', methods=["GET"])
-def get_balance_for_chart():
-    mycursor.execute(
-        "SELECT amount, `date` FROM detailedinfo WHERE type = 'transaction'")
-    myresult = mycursor.fetchall()
-    print(myresult)
-    if len(myresult) == 0:
-        return generate_response("No transactions")
-    return myresult
-
-
-@app.route('/api/updateCategory', methods=["POST"])
+# update category of a given transaction
+@app.route('/api/transaction', methods=["PUT"])
 def update_transaction_category():
     category_info = request.get_json()
     bank_reference = category_info.get('bankReference')
@@ -157,7 +151,7 @@ def get_modules_info(module):
     return json.dumps(mydict)
 
 
-@app.route('/api/Tables', methods=["GET"])
+@app.route('/api/db/tables', methods=["GET"])
 def get_tables():
     mycursor.execute("SHOW TABLES")
     tables = mycursor.fetchall()
@@ -228,7 +222,7 @@ def login():
     return generate_response("Login failed", context_type)
 
 
-@app.route('/api/addMember', methods=["POST"])
+@app.route('/api/member', methods=["POST"])
 def add_member():
     context_type = request.content_type
     if context_type == 'application/json':
@@ -266,7 +260,7 @@ def check_if_exist(username):
         return myresult[0][5]
 
 
-@app.route('/api/Columns/<table>', methods=["GET"])
+@app.route('/api/db/columns/<table>', methods=["GET"])
 def get_columns(table):
     mycursor.execute(
         "SELECT DISTINCT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = 'sportsaccounting' AND TABLE_NAME = '%s'" % table)
@@ -295,7 +289,7 @@ def search_keyword():
                 return f"'{table_name}','{column}', {result}"
 
 
-@app.route('/api/ModulesSummary', methods=["GET"])
+@app.route('/api/summary/modules', methods=["GET"])
 def make_modules_summary():
     bar_information = json.loads(get_modules_info('bar_information'))
     rental_information = json.loads(get_modules_info('rental_information'))
@@ -318,7 +312,7 @@ def make_modules_summary():
     return json_summary
 
 
-@app.route('/api/getMembers', methods=["GET"])
+@app.route('/api/member', methods=["GET"])
 def get_members():
     mycursor.execute("SELECT name FROM member")
     myresult = mycursor.fetchall()
@@ -374,7 +368,7 @@ def get_detailed_info(info_id):
     return d_info
 
 
-@app.route('/api/Summary', methods=["GET"])
+@app.route('/api/summary', methods=["GET"])
 def make_summary():
     summary = {"file": get_file_info(), "transactions": get_transaction_info()}
     # convert dict to json
