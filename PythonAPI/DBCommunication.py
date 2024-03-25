@@ -56,6 +56,9 @@ def perform_backup():
     file_name = "backup_" + datetime.now().strftime("%d-%m-%Y") + ".sql"
     subprocess.Popen("C:/xampp/mysql/bin/mysqldump.exe -h localhost -P 3306 -u root sportsaccounting --routines > "
                      "../Backup/" + file_name, shell=True)
+    accept_header = request.headers.get('Accept')
+    if accept_header is not None:
+        return generate_response("Backup performed", accept_header)
     return generate_response("Backup performed")
 
 
