@@ -105,13 +105,19 @@ def update_transaction_description():
 
 @app.route('/api/transactionDescription/<bank_ref>', methods=["GET"])
 def get_transaction_description(bank_ref):
-    mycursor.callproc('SowCustomDetailsBasedOnBankReference', [bank_ref])
-    for result in mycursor.stored_results():
-        myresult = result.fetchall()
-        return myresult
+    # mycursor.callproc('SowCustomDetailsBasedOnBankReference', [bank_ref])
+    query = """
+    SELECT d.customDetails FROM transaction_details d
+    JOIN transaction t ON d.id = t.transactionDetailsId
+    WHERE t.bankReference = %s
+    """
+    mycursor.execute(query, (bank_ref,))
+
+    custom_details = [row[0] for row in mycursor.fetchall()]
+    return custom_details
 
 
-@app.route('/api/getBalance', methods=["GET"])
+@app.route('/api/balance', methods=["GET"])
 def get_balance():
     mycursor.execute(
         "SELECT amount FROM detailedinfo WHERE Id = (SELECT availableBalanceId FROM file ORDER BY availableBalanceId DESC LIMIT 1)")
@@ -141,7 +147,7 @@ def update_transaction_category():
     return generate_response("Transaction category updated")
 
 
-@app.route('/api/ModuleInfo/<module>', methods=["GET"])
+@app.route('/api/module/<module>', methods=["GET"])
 def get_modules_info(module):
     mydict = dict()
     mydict[module] = dict()

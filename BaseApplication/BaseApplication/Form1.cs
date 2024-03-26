@@ -38,6 +38,7 @@ namespace BaseApplication
         List<Tuple<TextBox, ComboBox, ComboBox>> assignCategoryHelper = new();
         private List<User> users = new();
         JObject modulesInformation = new();
+        private string baseUrl = "http://127.0.0.1:122/api/";
         private void Form1_Load(object sender, EventArgs e)
         {
             navigation.TabPages.Remove(editTransaction);
@@ -64,31 +65,22 @@ namespace BaseApplication
             }
         }
         
-        string UploadToAPI(string fileToUpload)
-        {
-            string url = "http://127.0.0.1:122/api/uploadFile";
-            using var client = new WebClient();
-            var response = client.UploadFile(url, fileToUpload);
-            return GetJSONResponse(Encoding.Default.GetString(response));
-            
-        }
         void UpdateCategories(NameValueCollection categories)
         {
             var dictionary = categories.AllKeys.ToDictionary(key => key, key => categories[key]);
             
-            
             string json = JsonConvert.SerializeObject(dictionary);
-            string url = "http://127.0.0.1:122/api/updateCategory";
+            string fullUrl = baseUrl + "transaction";
             using var client = new WebClient();
             client.Headers[HttpRequestHeader.ContentType] = "application/json";
-            client.UploadString(url, "POST", json);
+            client.UploadString(fullUrl, "PUT", json);
             assignCategoryHelper.Clear();
         }
         
         void ConnectToApp(NameValueCollection userInfo, string type)
         {
             var dictionary = userInfo.AllKeys.ToDictionary(key => key, key => userInfo[key]);
-            string url = "http://127.0.0.1:122/api/user/" + type;
+            string fullUrl = baseUrl + "user/" + type;
             using var client = new WebClient();
             string message = "";
             string responseString = "";
@@ -103,7 +95,7 @@ namespace BaseApplication
                 client.Headers[HttpRequestHeader.ContentType] = "application/xml";
             }
             
-            responseString = client.UploadString(url, "POST", message);
+            responseString = client.UploadString(fullUrl, "POST", message);
             string contentType = client.ResponseHeaders["Content-Type"];
             if (contentType == "application/json")
             {
@@ -215,10 +207,10 @@ namespace BaseApplication
 
         private async Task<string[]> GetTransactions(string request)
         {
-            string url = $"http://127.0.0.1:122/api/getTransactions/{request}";
+            string fullUrl = baseUrl + $"transaction/{request}";
             using var client = new HttpClient();
 
-            string transactions = await client.GetStringAsync(url);
+            string transactions = await client.GetStringAsync(fullUrl);
             populateChart();
             return SplitResponse(transactions);
         }
@@ -296,10 +288,10 @@ namespace BaseApplication
 
         private async Task<string[]> GetMembers()
         {
-            string url = "http://127.0.0.1:122/api/getMembers";
+            string fullUrl = baseUrl + "member";
             using var client = new HttpClient();
 
-            string response = await client.GetStringAsync(url);
+            string response = await client.GetStringAsync(fullUrl);
 
             return SplitResponse(response);
         }
@@ -356,10 +348,10 @@ namespace BaseApplication
 
         private async void updateBatBtn_Click(object sender, EventArgs e)
         {
-            string url = "http://127.0.0.1:122/api/ModuleInfo/bar_information";
+            string fullUrl = baseUrl + "module/bar_information";
             using var client = new HttpClient();
 
-            string content = await client.GetStringAsync(url);
+            string content = await client.GetStringAsync(fullUrl);
             dynamic jsonObj = JsonConvert.DeserializeObject(content);
             barCostTxt.Text = jsonObj.bar_information.expense;
             barIncomeTxt.Text = jsonObj.bar_information.income;
@@ -368,10 +360,10 @@ namespace BaseApplication
 
         private async void updateRental_Click(object sender, EventArgs e)
         {
-            string url = "http://127.0.0.1:122/api/ModuleInfo/rental_information";
+            string fullUrl = baseUrl + "module/rental_information";
             using var client = new HttpClient();
 
-            string content = await client.GetStringAsync(url);
+            string content = await client.GetStringAsync(fullUrl);
             dynamic jsonObj = JsonConvert.DeserializeObject(content);
             rentalCostTxt.Text = jsonObj.rental_information.expense;
             rentalIncomeTxt.Text = jsonObj.rental_information.income;
@@ -380,10 +372,10 @@ namespace BaseApplication
 
         private async void generateSummaryBtn_Click(object sender, EventArgs e)
         {
-            string url = "http://127.0.0.1:122/api/ModulesSummary";
+            string fullUrl = baseUrl + "summary/modules";
             using var client = new HttpClient();
 
-            await client.GetStringAsync(url);
+            await client.GetStringAsync(fullUrl);
             MessageBox.Show("Summary generated");
         }
 
@@ -418,12 +410,12 @@ namespace BaseApplication
         private async void bRefCBox_SelectionChangeCommitted(object sender, EventArgs e)
         {
             string bRef = bRefCBox.SelectedItem.ToString();
-            
 
-            string url = "http://127.0.0.1:122/api/getTransactionDescription/"+ bRef;
+
+            string fullUrl = baseUrl + "transactionDescription/" + bRef;
             using var client = new HttpClient();
 
-            string description = await client.GetStringAsync(url);
+            string description = await client.GetStringAsync(fullUrl);
             richTextBox2.Text = TrimString(description);
         }
 
@@ -432,11 +424,12 @@ namespace BaseApplication
             string description = richTextBox2.Text;
             string bRef = bRefCBox.SelectedItem.ToString();
 
-            string url = $"http://127.0.0.1:122/api/updateTransactionDescription?customDetails={description}&bankReference={bRef}";
+            string fullUrl = baseUrl + $"transactionDescription?customDetails={description}&bankReference={bRef}";
             using var client = new HttpClient();
 
-            string response = await client.GetStringAsync(url);
-            MessageBox.Show(GetJSONResponse(response));
+            HttpResponseMessage response = await client.PutAsync(fullUrl, null);
+            string responseBody = await response.Content.ReadAsStringAsync();
+            MessageBox.Show(GetJSONResponse(responseBody));
 
             navigation.TabPages.Remove(editDescription);
             navigation.SelectTab(mainPage);
@@ -448,9 +441,9 @@ namespace BaseApplication
             string table = "";
             string keyword = keywordSeach.Text;
 
-            string url = $"http://127.0.0.1:122/api/searchKeyword?keyword={keyword}";
+            string fullUrl = baseUrl + $"searchKeyword?keyword={keyword}";
             using var client = new HttpClient();
-            string response = await client.GetStringAsync(url);
+            string response = await client.GetStringAsync(fullUrl);
             Regex regex = new(@"'(.*?)',\s*'(.*?)',\s*\((.*?)\)");
             Match match = regex.Match(response);
             if (match.Success)
@@ -472,9 +465,9 @@ namespace BaseApplication
         Task
         populateSearchTable(string table)
         {
-            string url = $"http://127.0.0.1:122/api/Columns/{table}";
+            string fullUrl = baseUrl + $"db/columns/{table}";
             using var client = new HttpClient();
-            string response = await client.GetStringAsync(url);
+            string response = await client.GetStringAsync(fullUrl);
             string[] columns = SplitResponse(response);
             searchColumnCBox.Items.Clear();
             searchTable.Columns.Clear();
@@ -599,7 +592,7 @@ namespace BaseApplication
         private void addMemberBtn_Click(object sender, EventArgs e)
         {
             using var client = new WebClient();
-            string url = "http://127.0.0.1:122/api/addMember";
+            string fullUrl = baseUrl + "member";
             var emailValid = new EmailAddressAttribute();
             if (emailValid.IsValid(memberEmailBox.Text))
             {
@@ -624,7 +617,7 @@ namespace BaseApplication
                     client.Headers[HttpRequestHeader.ContentType] = "application/xml";
                 }
                 
-                response = client.UploadString(url, "POST", message);
+                response = client.UploadString(fullUrl, "POST", message);
                 string contentType = client.ResponseHeaders["Content-Type"];
                 if (contentType == "application/json")
                 {
@@ -652,10 +645,10 @@ namespace BaseApplication
         }
         private async Task<string> GetBalance()
         {
-            string url = "http://127.0.0.1:122/api/getBalance";
+            string fullUrl = baseUrl + "balance";
             using var client = new HttpClient();
 
-            return await client.GetStringAsync(url);
+            return await client.GetStringAsync(fullUrl);
 
         }
 
@@ -688,10 +681,10 @@ namespace BaseApplication
 
         private async void summaryBtn_Click(object sender, EventArgs e)
         {
-            string url = "http://127.0.0.1:122/api/Summary";
+            string fullUrl = baseUrl + "summary";
             using var client = new HttpClient();
 
-            await client.GetStringAsync(url);
+            await client.GetStringAsync(fullUrl);
             MessageBox.Show("Summary generated");
         }
 
@@ -700,41 +693,40 @@ namespace BaseApplication
         private async void populateChart()
         {
             chart1.Series[0].Points.Clear();
-            string url = "http://127.0.0.1:122/api/getTransactionsForChart";
+            string fullUrl = baseUrl + "transaction/chart";
             using var client = new HttpClient();
 
-            var json = await client.GetStringAsync(url);
+            var json = await client.GetStringAsync(fullUrl);
             if (json.Contains("No transactions"))
             {
                 return;
             }
-                if(!navigation.TabPages.Contains(chartPage))
-                {
-                    navigation.TabPages.Add(chartPage);
-                    chart1.Series[0].Name = "Money, EUR";
-                }
-                object[][] dataArray;
-                dataArray = JsonConvert.DeserializeObject<object[][]>(json);
+            if(!navigation.TabPages.Contains(chartPage))
+            {
+                navigation.TabPages.Add(chartPage);
+                chart1.Series[0].Name = "Money, EUR";
+            }
+            object[][] dataArray;
+            dataArray = JsonConvert.DeserializeObject<object[][]>(json);
 
-                for (int i = 0; i < dataArray.Length; i++)
+            for (int i = 0; i < dataArray.Length; i++)
+            {
+                if (dataArray[i].Length > 1 && dataArray[i][1] is string dateString)
                 {
-                    if (dataArray[i].Length > 1 && dataArray[i][1] is string dateString)
+                    if (DateTime.TryParseExact(dateString, "ddd, dd MMM yyyy HH:mm:ss 'GMT'", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime date))
                     {
-                        if (DateTime.TryParseExact(dateString, "ddd, dd MMM yyyy HH:mm:ss 'GMT'", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime date))
-                        {
-                            dataArray[i][1] = date.ToString("yyyy-MM-dd");
-                        }
-                        dataArray = dataArray.OrderBy(item => DateTime.Parse((string)item[1])).ToArray();
+                        dataArray[i][1] = date.ToString("yyyy-MM-dd");
                     }
+                    dataArray = dataArray.OrderBy(item => DateTime.Parse((string)item[1])).ToArray();
                 }
-                foreach (var item in dataArray)
-                {
-                    var xValue = item[1].ToString(); // Assuming date is the x-value
-                    var yValue = Convert.ToDouble(item[0]); // Assuming value is the y-value
+            }
+            foreach (var item in dataArray)
+            {
+                var xValue = item[1].ToString(); // Assuming date is the x-value
+                var yValue = Convert.ToDouble(item[0]); // Assuming value is the y-value
 
-                    chart1.Series[0].Points.AddXY(xValue, yValue);
-                }
-                //chart1.Series[0].Name = "Money, EUR";
+                chart1.Series[0].Points.AddXY(xValue, yValue);
+            }
         }
 
         public static string GetJSONResponse(string jsonResponse)
