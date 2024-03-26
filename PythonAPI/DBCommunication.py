@@ -91,19 +91,18 @@ def retrieve_transactions(request_type):
     return myresult
 
 
-@app.route('/api/transactionDescription', methods=["PUT"])
-def update_transaction_description():
+@app.route('/api/transaction/<bank_ref>/description', methods=["PATCH"])
+def update_transaction_description(bank_ref):
     custom_details = request.args.get('customDetails')
-    bank_reference = request.args.get('bankReference')
     update_desc = "UPDATE transaction_details d JOIN transaction t ON d.id = t.transactionDetailsId SET " \
                   "d.customDetails = %s WHERE t.bankReference = %s"
-    val = (custom_details, bank_reference)
+    val = (custom_details, bank_ref)
     mycursor.execute(update_desc, val)
     mydb.commit()
     return generate_response("Transaction description updated")
 
 
-@app.route('/api/transactionDescription/<bank_ref>', methods=["GET"])
+@app.route('/api/transaction/<bank_ref>/description', methods=["GET"])
 def get_transaction_description(bank_ref):
     # mycursor.callproc('SowCustomDetailsBasedOnBankReference', [bank_ref])
     query = """
@@ -321,11 +320,26 @@ def make_modules_summary():
     return json_summary
 
 
+# Get all members
 @app.route('/api/member', methods=["GET"])
 def get_members():
     mycursor.execute("SELECT name FROM member")
     myresult = mycursor.fetchall()
     return myresult
+
+
+# Get member by ID
+@app.route('/api/member/<member_id>', methods=["GET"])
+def get_members(member_id):
+    mycursor.execute("SELECT name FROM member WHERE Id = %s" % member_id)
+    myresult = mycursor.fetchall()
+    return myresult
+
+
+@app.route('/api/member/<member_id>', methods=["DELETE"])
+def get_members(member_id):
+    mycursor.execute("DELETE FROM member WHERE Id = %s" % member_id)
+    return generate_response("Member removed")
 
 
 def get_transaction_details(details_id):
