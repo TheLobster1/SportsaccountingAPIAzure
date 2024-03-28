@@ -91,9 +91,9 @@ def retrieve_transactions(request_type):
     return myresult
 
 
-@app.route('/api/transaction/<bank_ref>/description', methods=["PATCH"])
-def update_transaction_description(bank_ref):
-    custom_details = request.args.get('customDetails')
+@app.route('/api/transaction/<bank_ref>/description/<custom_details>', methods=["PATCH"])
+def update_transaction_description(bank_ref, custom_details):
+    # custom_details = request.args.get('customDetails')
     update_desc = "UPDATE transaction_details d JOIN transaction t ON d.id = t.transactionDetailsId SET " \
                   "d.customDetails = %s WHERE t.bankReference = %s"
     val = (custom_details, bank_ref)
@@ -330,14 +330,14 @@ def get_members():
 
 # Get member by ID
 @app.route('/api/member/<member_id>', methods=["GET"])
-def get_members(member_id):
+def get_member(member_id):
     mycursor.execute("SELECT name FROM member WHERE Id = %s" % member_id)
     myresult = mycursor.fetchall()
     return myresult
 
 
 @app.route('/api/member/<member_id>', methods=["DELETE"])
-def get_members(member_id):
+def delete_member(member_id):
     mycursor.execute("DELETE FROM member WHERE Id = %s" % member_id)
     return generate_response("Member removed")
 

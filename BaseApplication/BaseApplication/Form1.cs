@@ -23,6 +23,7 @@ using System.Xml.Serialization;
 using System.Xml;
 using System.Runtime.Serialization;
 using System.Data.SqlTypes;
+using System.Reflection;
 
 namespace BaseApplication
 {
@@ -412,7 +413,7 @@ namespace BaseApplication
             string bRef = bRefCBox.SelectedItem.ToString();
 
 
-            string fullUrl = baseUrl + "transactionDescription/" + bRef;
+            string fullUrl = baseUrl + "transaction/" + bRef + "/description";
             using var client = new HttpClient();
 
             string description = await client.GetStringAsync(fullUrl);
@@ -424,15 +425,18 @@ namespace BaseApplication
             string description = richTextBox2.Text;
             string bRef = bRefCBox.SelectedItem.ToString();
 
-            string fullUrl = baseUrl + $"transactionDescription?customDetails={description}&bankReference={bRef}";
-            using var client = new HttpClient();
+            string fullUrl = baseUrl + $"transaction/{bRef}/description/{description}";
 
-            HttpResponseMessage response = await client.PutAsync(fullUrl, null);
-            string responseBody = await response.Content.ReadAsStringAsync();
-            MessageBox.Show(GetJSONResponse(responseBody));
+            using var client = new WebClient();
+            string response = client.UploadString(fullUrl, "PATCH", "");
+            
+            // HttpResponseMessage response = await client.PutAsync(fullUrl, null);
+            //string responseBody = await response.Content.ReadAsStringAsync();
+            MessageBox.Show(GetJSONResponse(response));
 
             navigation.TabPages.Remove(editDescription);
             navigation.SelectTab(mainPage);
+
         }
 
         private async void searchKeywordBtn_Click(object sender, EventArgs e)
@@ -450,9 +454,13 @@ namespace BaseApplication
             {
                 table = match.Groups[1].Value;
                 string column = match.Groups[2].Value;
-                response = "[[" + match.Groups[3].Value.Replace("'", "\"").Replace(" None","null") + ")]]";
+                response = "[[" + match.Groups[3].Value.Replace("'", "\"").Replace(" None","null") + "]]";
             }
             Console.WriteLine(response);
+            if(response.Contains("date"))
+            {
+                
+            }
             string[][] parsedResponse = ParseStringToArray(response);
             await populateSearchTable(table);
             for (int i = 0; i < parsedResponse.Length; i++)
@@ -522,38 +530,30 @@ namespace BaseApplication
 
         static string[][] ParseStringToArray(string input)
         {
-            //string pattern = @"\d{4}-\d{2}-\d{2}";
-            //Match match = Regex.Match(input, pattern);
-            //if (match.Success)
-            //{
-            //    string dateString = match.Value;
-            //    // Parse the date string into a DateTime object
-            //    string formattedDate = DateTime.ParseExact(dateString, "yyyy-MM-dd", CultureInfo.InvariantCulture)
-            //        .ToString("yyyyMMdd"); // Or any other format you prefer
-            //    int startIndex = input.IndexOf("datetime.date(") + 16;
-            //    int endIndex = input.IndexOf(")");
+            if (input.Contains("datetime"))
+            {
+                string modifiedString = input.Insert(input.Length - 2, ")");
+                var pFrom = modifiedString.IndexOf("datetime") + "datetime.date(".Length;
+                var pReplace = modifiedString.IndexOf("datetime");
+                var pTo = modifiedString.LastIndexOf(")");
+                string date = modifiedString.Substring(pFrom, pTo - pFrom);
+                string toReplace = modifiedString.Substring(pReplace, pTo - pReplace + 1);
+                //convert to DateTime
+                DateTime dateTime = DateTime.Parse(date);
+                string formattedDate = "\"" + dateTime.ToString("yyyy-MM-dd") + "\"";
+                //replace the date inside input with formattedDate
+                input = modifiedString.Replace(toReplace, formattedDate);
+            }
 
-            //    if (startIndex > 0 && endIndex > startIndex)
-            //    {
-            //        // Create a new string with the formatted date inserted
-            //        input = input.Substring(0, startIndex) + formattedDate + input.Substring(endIndex);
-            //    }
-            //}
+
 
             JArray jsonArray = JsonConvert.DeserializeObject<JArray>(input);
             string[][] array = new string[jsonArray.Count][];
 
             for (int i = 0; i < jsonArray.Count; i++)
             {
-                JArray innerArray = jsonArray[i].ToObject<JArray>();
-                array[i] = new string[innerArray.Count];
-
-                for (int j = 0; j < innerArray.Count; j++)
-                {
-                    array[i][j] = innerArray[j].ToString();
-                }
+                array[i] = jsonArray[i].ToObject<string[]>();
             }
-
             return array;
         }
 
@@ -571,18 +571,6 @@ namespace BaseApplication
 
         private async void searchKWordBtn_Click(object sender, EventArgs e)
         {
-            //if (!navigation.TabPages.Contains(searchKeyword))
-            //{
-            //    string url = $"http://127.0.0.1:122/api/Tables";
-            //    using var client = new HttpClient();
-            //    string response = await client.GetStringAsync(url);
-            //    string[] tables = SplitResponse(response);
-
-            //    foreach (string table in tables)
-            //    {
-            //        searchTableCBox.Items.Add(TrimString(table));
-            //    }
-            //}
             navigation.TabPages.Add(searchKeyword);
             navigation.SelectTab(searchKeyword);
             searchTableCBox.DropDownStyle = ComboBoxStyle.DropDownList;
@@ -760,20 +748,16 @@ namespace BaseApplication
             // serialize the dictionary
             DataContractSerializer serializer = new DataContractSerializer(dict.GetType());
 
-            using (StringWriter sw = new StringWriter())
-            {
-                using (XmlTextWriter writer = new XmlTextWriter(sw))
-                {
-                    // add formatting so the XML is easy to read in the log
-                    writer.Formatting = Formatting.Indented;
+            using StringWriter sw = new StringWriter();
+            using XmlTextWriter writer = new XmlTextWriter(sw);
+            // add formatting so the XML is easy to read in the log
+            writer.Formatting = Formatting.Indented;
 
-                    serializer.WriteObject(writer, dict);
+            serializer.WriteObject(writer, dict);
 
-                    writer.Flush();
+            writer.Flush();
 
-                    return sw.ToString();
-                }
-            }
+            return sw.ToString();
         }
 
         private void xmlResponseSlct_CheckedChanged(object sender, EventArgs e)
